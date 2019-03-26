@@ -1,0 +1,6 @@
+def pre_process(image):
+    return image.float().div(255).unsqueeze(0)
+
+def post_process(output):
+    # tf model has 1001 classes, hence negative 1
+    return output.max(1)[1] - 1
