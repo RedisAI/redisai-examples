@@ -38,7 +38,7 @@ def setup_slave(slaves: list, passphrase: str, user: str, master: str) -> None:
         slaveof = f'slaveof {master} 6379'
         print(logfile, slaveof)
         node.put('redis_configs/redis.conf', 'redis-stable/redis.conf')
-        node.run(f'echo {logfile} >> redis-stable/redis.conf')
+        node.run(f'echo {slaveof} >> redis-stable/redis.conf')
         node.run(f'echo {logfile} >> redis-stable/redis.conf')
 
         # sentinal conf

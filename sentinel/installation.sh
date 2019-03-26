@@ -1,5 +1,6 @@
 sudo apt update 
 sudo apt install -y build-essential tcl libjemalloc-dev git cmake unzip
+
 sudo ufw allow 6379
 sudo ufw allow 26379
 
