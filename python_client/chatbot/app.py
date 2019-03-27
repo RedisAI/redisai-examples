@@ -22,9 +22,20 @@ def chat():
     try:
         indices = utils.get_batched_indices(message)
     except KeyError:
-        return "I did not understand your language!!, check the spelling perhaps"
-    numpy_array = utils.list2numpy(indices)
-    length = utils.get_length(numpy_array)
-    reply = redis_db.process(numpy_array, length)
+        reply = "I did not understand your language!!, check the spelling perhaps"
+    else:
+        numpy_array = utils.list2numpy(indices)
+        length = utils.get_length(numpy_array)
+        reply = redis_db.process(numpy_array, length)
     resp = jsonify(reply=reply)
     return resp
+
+
+@app.route('/<path:filepath>')
+def ui_components(filepath):
+    return send_from_directory('static', filepath)
+
+
+@app.route('/')
+def ui():
+    return send_from_directory('static', 'index.html')
