@@ -28,7 +28,8 @@ def normalize_string(s):
     return s
 
 def get_batched_indices(sentence):
-    return [[voc.word2index[word] for word in sentence.split(' ')] + [EOS_token]]
+    return [[el for el in [voc.word2index.get(word) for word in sentence.split(' ')] if el is not None] + [EOS_token]]
+    # return [[voc.word2index[word] for word in sentence.split(' ')] + [EOS_token]]
 
 def list2numpy(indices):
     return np.array(indices, dtype=np.long).transpose()
