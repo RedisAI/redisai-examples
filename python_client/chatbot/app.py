@@ -27,6 +27,7 @@ def chat():
         numpy_array = utils.list2numpy(indices)
         length = utils.get_length(numpy_array)
         reply = redis_db.process(numpy_array, length)
+
     resp = jsonify(reply=reply)
     return resp
 

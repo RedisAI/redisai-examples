@@ -25,7 +25,7 @@ a = time.time()
 out3 = r.execute_command(
     'AI.TENSORSET', 'image', 'UINT8', *image.shape, 'BLOB', image.tobytes())
 out4 = r.execute_command(
-    'AI.SCRIPTRUN', 'imagenet_script', 'pre_process', 'INPUTS', 'image', 'OUTPUTS', 'temp1')
+    'AI.SCRIPTRUN', 'imagenet_script', 'pre_process_3ch', 'INPUTS', 'image', 'OUTPUTS', 'temp1')
 out5 = r.execute_command('AI.MODELRUN', 'imagenet_model', 'INPUTS', 'temp1', 'OUTPUTS', 'temp2')
 out6 = r.execute_command(
     'AI.SCRIPTRUN', 'imagenet_script', 'post_process', 'INPUTS', 'temp2', 'OUTPUTS', 'out')
