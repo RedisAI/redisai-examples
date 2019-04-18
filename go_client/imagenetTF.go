@@ -23,15 +23,20 @@ func init() {
 
 func getRGBImage(imgPath string) (*bytes.Buffer, image.Rectangle) {
     // It is not the optimized read
-    var rgbImg []uint8
     imgfile, _ := os.Open(imgPath)
     defer imgfile.Close()
     decodedImg, _, _ := image.Decode(imgfile)
     rect := decodedImg.Bounds()
     rgba := image.NewRGBA(rect)
     draw.Draw(rgba, rect, decodedImg, rect.Min, draw.Src)
+    arraylen := rect.Max.X * rect.Max.X * 3  // square image with 3 channels
+    rgbImg := make([]uint8, arraylen)
+    arrayindex := 0
     for x:= 0; x < len(rgba.Pix); x += 4 {
-        rgbImg = append(rgbImg, rgba.Pix[x], rgba.Pix[x + 1], rgba.Pix[x + 2])
+        rgbImg[arrayindex] = rgba.Pix[x]
+        rgbImg[arrayindex + 1] = rgba.Pix[x + 1]
+        rgbImg[arrayindex + 2] = rgba.Pix[x + 2]
+        arrayindex += 3
     }
     imgbuf := new(bytes.Buffer)
     binary.Write(imgbuf, binary.BigEndian, rgbImg)
