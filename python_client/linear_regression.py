@@ -1,7 +1,7 @@
 import redisai as rai
-from redisai.model import Model as raimodel
+from redisai import load_model
 
-model = raimodel.load("../models/ONNX/boston.onnx")
+model = load_model("../models/ONNX/boston.onnx")
 con = rai.Client()
 con.modelset("onnx_model", rai.Backend.onnx, rai.Device.cpu, model)
 
