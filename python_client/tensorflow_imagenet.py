@@ -5,11 +5,11 @@ import time
 
 r = redis.Redis(host='localhost', port=6379, db=0)
 
-tf_model_path = '../models/imagenet/tensorflow/resnet50.pb'
-script_path = '../models/imagenet/tensorflow/data_processing_script.txt'
-img_path = '../models/imagenet/data/cat.jpg'
+tf_model_path = '../models/tensorflow/imagenet/resnet50.pb'
+script_path = '../models/tensorflow/imagenet/data_processing_script.txt'
+img_path = '../data/cat.jpg'
 
-class_idx = json.load(open("../models/imagenet/data/imagenet_classes.json"))
+class_idx = json.load(open("../data/imagenet_classes.json"))
 
 image = io.imread(img_path)
 
@@ -19,7 +19,8 @@ with open(tf_model_path, 'rb') as f:
 with open(script_path, 'rb') as f:
     script = f.read()
 
-out1 = r.execute_command('AI.MODELSET', 'imagenet_model', 'TF', 'CPU', 'INPUTS', 'images', 'OUTPUTS', 'output', tf_model)
+out1 = r.execute_command(
+    'AI.MODELSET', 'imagenet_model', 'TF', 'CPU', 'INPUTS', 'images', 'OUTPUTS', 'output', tf_model)
 out2 = r.execute_command('AI.SCRIPTSET', 'imagenet_script', 'CPU', script)
 a = time.time()
 out3 = r.execute_command(

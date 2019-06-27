@@ -5,11 +5,11 @@ import time
 
 r = redis.Redis(host='localhost', port=6379, db=0)
 
-pt_model_path = '../models/imagenet/pytorch/resnet50.pt'
-script_path = '../models/imagenet/pytorch/data_processing_script.txt'
-img_path = '../models/imagenet/data/cat.jpg'
+pt_model_path = '../models/pytorch/imagenet/resnet50.pt'
+script_path = '../models/pytorch/imagenet/data_processing_script.txt'
+img_path = '../data/cat.jpg'
 
-class_idx = json.load(open("../models/imagenet/data/imagenet_classes.json"))
+class_idx = json.load(open("../data/imagenet_classes.json"))
 
 image = io.imread(img_path)
 

@@ -1,9 +1,10 @@
 import redisai as rai
-from redisai import load_model
+from redisai.model import load_model
 
-model = load_model("../models/ONNX/boston.onnx")
+model = load_model("../models/sklearn/linear_regression/linear_regression.onnx")
+
 con = rai.Client()
-con.modelset("onnx_model", rai.Backend.onnx, rai.Device.cpu, model)
+con.modelset("sklearn_model", rai.Backend.onnx, rai.Device.cpu, model)
 
 # dummydata taken from sklearn.datasets.load_boston().data[0]
 dummydata = [
@@ -11,6 +12,6 @@ dummydata = [
 tensor = rai.Tensor.scalar(rai.DType.float, *dummydata)
 con.tensorset("input", tensor)
 
-con.modelrun("onnx_model", ["input"], ["output"])
+con.modelrun("sklearn_model", ["input"], ["output"])
 outtensor = con.tensorget("output", as_type=rai.BlobTensor)
 print(f"House cost predicted by model is ${outtensor.to_numpy().item() * 1000}")
