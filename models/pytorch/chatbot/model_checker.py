@@ -35,7 +35,6 @@ decoder = torch.jit.load('decoder.pt')
 def run():
     with torch.no_grad():
         SOS_token = 1
-        n_layers = 2
         max_length = 10
         indexes_batch = [[787, 572, 2]]  # "hello sir + EOS"
         lengths = torch.tensor([3])
@@ -60,5 +59,6 @@ def run():
                 continue
             out_string.append(x)
         print('Bot:', ' '.join(out_string))
+
 
 run()

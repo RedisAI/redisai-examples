@@ -1,10 +1,9 @@
-import torchvision.transforms as transforms
 from skimage import io
 import json
 import torch
 
-class_idx = json.load(open("../data/imagenet_classes.json"))
-filepath = '../data/cat.jpg'
+class_idx = json.load(open("../../../data/imagenet_classes.json"))
+filepath = '../../../data/cat.jpg'
 
 model = torch.jit.load('resnet50.pt')
 
@@ -22,9 +21,11 @@ def pre_process(image):
     temp = image.float().div(255).permute(2, 0, 1)
     return temp.sub(mean).div(std).unsqueeze(0)
 
+
 @torch.jit.script
 def post_process(output):
     return output.max(1)[1]
+
 
 numpy_img = io.imread(filepath)
 image = torch.from_numpy(numpy_img)

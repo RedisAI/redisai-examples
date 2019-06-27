@@ -2,7 +2,19 @@
 
 **A set of examples those showcases the features of RedisAI**
 
-All the models (both serialized models and the code to generate the same) are kept inside the `models` folder as subfolders with all the dependancies included. Right now we have example client implementations for the models in JS and Python.
+## Setting UP
+- Clone the repository
+```
+git clone git@github.com:RedisAI/redisai-examples.git
+```
+
+- Install [git lfs](https://help.github.com/en/articles/installing-git-large-file-storage).
+- Pull model files and assets with git lfs
+```
+git-lfs pull
+```
+- You need python3.6+ for running python examples. Use conda environment file for installing dependencies. Nodejs folder has package.json file for installing dependencies.
+
 
 ### Steps to run python examples
 

@@ -11,10 +11,8 @@ class ScriptModuleWrapper(torch.jit.ScriptModule):
         self.traced_generator = traced_generator
 
     @torch.jit.script_method
-    def forward(self, inputs, hidden):    
+    def forward(self, inputs, hidden):
         i = 0
-        n_layers = 2
-        hidden_size = 300
         prediction_seq_length = 200
         out = torch.zeros(prediction_seq_length, dtype=torch.long)
         while i < prediction_seq_length:
@@ -30,7 +28,7 @@ class ScriptModuleWrapper(torch.jit.ScriptModule):
         prob = torch.multinomial(output_dist, 1)[0]
         return prob
 
-filename = 'CharRNN_pipeline.pt'
+
+filename = 'charrnn_pipeline.pt'
 print('Saving pipeline to {}'.format(filename))
 ScriptModuleWrapper().save(filename)
-

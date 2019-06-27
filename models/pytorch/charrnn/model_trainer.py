@@ -52,6 +52,7 @@ def get_data():
 def str2int(string_data):
     return [all_characters.index(c) for c in string_data]
 
+
 def int2str(int_data):
     return ''.join([all_characters[i] for i in int_data])
 
@@ -63,11 +64,11 @@ class CharRNN(nn.Module):
         self.hidden_size = hidden_size
         self.output_size = output_size
         self.n_layers = n_layers
-        
+
         self.encoder = nn.Embedding(input_size, hidden_size)
         self.gru = nn.GRU(hidden_size, hidden_size, n_layers)
         self.decoder = nn.Linear(hidden_size, output_size)
-    
+
     def forward(self, inputs, hidden):
         inputs = self.encoder(inputs.view(1, -1))
         output, hidden = self.gru(inputs, hidden)
@@ -75,7 +76,8 @@ class CharRNN(nn.Module):
         return output, hidden
 
     def init_hidden(self, batch_size):
-        hidden = torch.zeros(self.n_layers, batch_size, self.hidden_size).to(device=device)
+        return torch.zeros(self.n_layers, batch_size, self.hidden_size).to(device=device)
+
 
 generator = CharRNN(
     input_size=n_characters,
@@ -116,4 +118,4 @@ for epoch in tqdm(range(1, epochs + 1)):
 
 generator.eval()
 traced_generator = torch.jit.trace(generator, (p, hidden))
-torch.jit.save(traced_generator, 'CharRNN_model.pt')
+torch.jit.save(traced_generator, 'charrnn_model.pt')
