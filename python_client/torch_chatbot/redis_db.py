@@ -7,14 +7,14 @@ import utils
 
 
 class DB:
-    
+
     def __init__(self, host='localhost', port=6379, db=0):
         self.max_len = 10
         self.exec = redis.Redis(host=host, port=port, db=db).execute_command
 
     def initiate(self):
-        encoder_path = f'{dirname(dirname(dirname(__file__)))}/models/chatbot/encoder.pt'
-        decoder_path = f'{dirname(dirname(dirname(__file__)))}/models/chatbot/decoder.pt'
+        encoder_path = f'{dirname(dirname(dirname(__file__)))}/models/pytorch/chatbot/encoder.pt'
+        decoder_path = f'{dirname(dirname(dirname(__file__)))}/models/pytorch/chatbot/decoder.pt'
         with open(encoder_path, 'rb') as f:
             en_model = f.read()
         with open(decoder_path, 'rb') as f:
@@ -48,7 +48,7 @@ class DB:
             if ind == utils.EOS_token:
                 break
             self.exec(
-            'AI.TENSORSET', 'd_input', 'INT64', 1, 1, 'VALUES', ind)
+                'AI.TENSORSET', 'd_input', 'INT64', 1, 1, 'VALUES', ind)
             if ind == utils.PAD_token:
                 continue
             out.append(ind)
