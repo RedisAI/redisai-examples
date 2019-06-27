@@ -2,12 +2,13 @@ import os
 import sys
 from pyspark.sql import SparkSession
 from pyspark.ml.linalg import VectorUDT, SparseVector
-from pyspark.ml.feature import StringIndexer, VectorIndexer
+from pyspark.ml.feature import VectorIndexer
 from pyspark.ml import Pipeline
-from pyspark.ml.classification import DecisionTreeClassifier
+from pyspark.ml.regression import DecisionTreeRegressor
 import pyspark
 from redisai.model import save_sparkml
-from redisai.model import onnx_tensortypes
+from redisai.model import onnx_utils
+from redisai import DType
 
 
 executable = sys.executable
@@ -21,15 +22,15 @@ spark.udf.register(
     "truncateFeatures",
     lambda x: SparseVector(feature_count, range(0, feature_count), x.toArray()[125: 130]),
     VectorUDT())
-data = original_data.selectExpr(
-    "cast(label as string) as label", "truncateFeatures(features) as features")
-breakpoint()
-label_indexer = StringIndexer(inputCol="label", outputCol="indexedLabel", handleInvalid='error')
+data = original_data.selectExpr("label", "truncateFeatures(features) as features")
 feature_indexer = VectorIndexer(
-    inputCol="features", outputCol="indexedFeatures", maxCategories=10, handleInvalid='error')
-dt = DecisionTreeClassifier(labelCol="indexedLabel", featuresCol="indexedFeatures")
-pipeline = Pipeline(stages=[label_indexer, feature_indexer, dt])
+    inputCol="features", outputCol="indexedFeatures", maxCategories=4, handleInvalid='error')
+dt = DecisionTreeRegressor(featuresCol="indexedFeatures")
+pipeline = Pipeline(stages=[feature_indexer, dt])
+
+# (trainingData, testData) = data.randomSplit([0.9, 0.1])
 model = pipeline.fit(data)
-labeltype = ('label', onnx_tensortypes.StringTensorType([1, 1]))
-featurestype = ('features', onnx_tensortypes.FloatTensorType([1, feature_count]))
-save_sparkml(model, 'spark.onnx', [labeltype, featurestype], spark_session=spark)
+featurestype = onnx_utils.get_tensortype(
+    node_name='features', dtype=DType.float32, shape=(1, feature_count))
+save_sparkml(
+    model, 'spark.onnx', initial_types=[featurestype], spark_session=spark)
