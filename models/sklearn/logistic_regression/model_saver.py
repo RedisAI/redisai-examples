@@ -1,8 +1,8 @@
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from redisai.model import save_sklearn
-from redisai.model import onnx_utils
+from redisai import save_sklearn
+from redisai import onnx_utils
 from redisai import DType
 
 

@@ -1,7 +1,7 @@
 import numpy as np
 
 from redisai import BlobTensor, Client, Backend, Device
-from redisai.model import load_model
+from redisai import load_model
 
 
 tensor = BlobTensor.from_numpy(np.ones((1, 13), dtype=np.float32))

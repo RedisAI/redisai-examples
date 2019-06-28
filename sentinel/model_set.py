@@ -1,16 +1,12 @@
-import redis
+import redisai as rai
 
-r = redis.Redis(host='159.65.150.75', port=6379, db=0)
+con = rai.Client(host='159.65.150.75', port=6379, db=0)
 
 pt_model_path = '../models/imagenet/pytorch/resnet50.pt'
 script_path = '../models/imagenet/pytorch/data_processing_script.txt'
 
+pt_model = rai.load_model(pt_model_path)
+script = rai.load_script(script_path)
 
-with open(pt_model_path, 'rb') as f:
-    pt_model = f.read()
-
-with open(script_path, 'rb') as f:
-    script = f.read()
-
-out1 = r.execute_command('AI.MODELSET', 'imagenet_model', 'TORCH', 'CPU', pt_model)
-out2 = r.execute_command('AI.SCRIPTSET', 'imagenet_script', 'CPU', script)
+out1 = con.modelset('imagenet_model', rai.Backend.torch, rai.Device.cpu, pt_model)
+out2 = con.scriptset('imagenet_script', rai.Device.cpu, script)

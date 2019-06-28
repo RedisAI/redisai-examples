@@ -3,8 +3,8 @@ import sys
 import pyspark
 from pyspark.sql import SparkSession
 from pyspark.ml.classification import LogisticRegression, OneVsRest
-from redisai.model import save_sparkml
-from redisai.model import onnx_utils
+from redisai import save_sparkml
+from redisai import onnx_utils
 from redisai import DType
 
 

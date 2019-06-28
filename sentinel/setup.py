@@ -55,9 +55,11 @@ def install(executor):
     with open('installation.sh') as f:
         executor.run(f.read())
 
+
 def bring_up_server(executor):
     with open('run.sh') as f:
         executor.run(f.read())
+
 
 def get_home_path(executor):
     result = executor.run('echo $HOME')
@@ -73,7 +75,6 @@ def get_home_path(executor):
     return out
 
 
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--master", help="Master host address", type=str)
@@ -81,10 +82,10 @@ if __name__ == '__main__':
     parser.add_argument('--passphrase', help="Passphrase for ssh key file", type=str)
     parser.add_argument('--user', help="Username to the server", type=str)
     args = parser.parse_args()
-    
+
     passphrase = args.passphrase
     user = args.user
-    
+
     if not args.master or not args.slaves:
         raise Exception('Host argument cannot be empty')
     try:
@@ -95,10 +96,8 @@ if __name__ == '__main__':
         slaves = list(map(str.strip, args.slaves.split(',')))
     except Exception as e:
         raise Exception(f'Slave argument does not have proper value: {e}')
-    
+
     if len(master) > 1:
         raise Exception('We do not support more than one master now!')
     setup_master(master[0], passphrase, user)
     setup_slave(slaves, passphrase, user, master[0])
-
-

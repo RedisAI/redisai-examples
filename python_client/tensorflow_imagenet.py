@@ -1,9 +1,10 @@
-import redis
-from skimage import io
 import json
 import time
+import redisai as rai
+from redisai import load_model, load_script
+from skimage import io
 
-r = redis.Redis(host='localhost', port=6379, db=0)
+con = rai.Client(host='localhost', port=6379, db=0)
 
 tf_model_path = '../models/tensorflow/imagenet/resnet50.pb'
 script_path = '../models/tensorflow/imagenet/data_processing_script.txt'
@@ -13,24 +14,21 @@ class_idx = json.load(open("../data/imagenet_classes.json"))
 
 image = io.imread(img_path)
 
-with open(tf_model_path, 'rb') as f:
-    tf_model = f.read()
+tf_model = load_model(tf_model_path)
+script = load_script(script_path)
 
-with open(script_path, 'rb') as f:
-    script = f.read()
 
-out1 = r.execute_command(
-    'AI.MODELSET', 'imagenet_model', 'TF', 'CPU', 'INPUTS', 'images', 'OUTPUTS', 'output', tf_model)
-out2 = r.execute_command('AI.SCRIPTSET', 'imagenet_script', 'CPU', script)
+out1 = con.modelset(
+    'imagenet_model', rai.Backend.tf, rai.Device.cpu,
+    input=['images'], output=['output'], data=tf_model)
+out2 = con.scriptset('imagenet_script', rai.Device.cpu, script)
 a = time.time()
-out3 = r.execute_command(
-    'AI.TENSORSET', 'image', 'UINT8', *image.shape, 'BLOB', image.tobytes())
-out4 = r.execute_command(
-    'AI.SCRIPTRUN', 'imagenet_script', 'pre_process_3ch', 'INPUTS', 'image', 'OUTPUTS', 'temp1')
-out5 = r.execute_command('AI.MODELRUN', 'imagenet_model', 'INPUTS', 'temp1', 'OUTPUTS', 'temp2')
-out6 = r.execute_command(
-    'AI.SCRIPTRUN', 'imagenet_script', 'post_process', 'INPUTS', 'temp2', 'OUTPUTS', 'out')
-final = r.execute_command('AI.TENSORGET', 'out', 'VALUES')
-ind = final[2][0]
+tensor = rai.BlobTensor.from_numpy(image)
+con.tensorset('image', tensor)
+out4 = con.scriptrun('imagenet_script', 'pre_process_3ch', 'image', 'temp1')
+out5 = con.modelrun('imagenet_model', 'temp1', 'temp2')
+out6 = con.scriptrun('imagenet_script', 'post_process', 'temp2', 'out')
+final = con.tensorget('out', as_type=rai.BlobTensor)
+ind = final.to_numpy().item()
 print(ind, class_idx[str(ind)])
 print(time.time() - a)

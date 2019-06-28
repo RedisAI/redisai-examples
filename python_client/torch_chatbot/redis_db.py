@@ -2,6 +2,7 @@ from os.path import dirname
 
 import numpy as np
 import redis
+import redisai as rai
 
 import utils
 
@@ -11,44 +12,40 @@ class DB:
     def __init__(self, host='localhost', port=6379, db=0):
         self.max_len = 10
         self.exec = redis.Redis(host=host, port=port, db=db).execute_command
+        self.con = rai.Client(host=host, port=port, db=db)
 
     def initiate(self):
         encoder_path = f'{dirname(dirname(dirname(__file__)))}/models/pytorch/chatbot/encoder.pt'
         decoder_path = f'{dirname(dirname(dirname(__file__)))}/models/pytorch/chatbot/decoder.pt'
-        with open(encoder_path, 'rb') as f:
-            en_model = f.read()
-        with open(decoder_path, 'rb') as f:
-            de_model = f.read()
-        self.exec('AI.MODELSET', 'encoder', 'TORCH', 'CPU', en_model)
-        self.exec('AI.MODELSET', 'decoder', 'TORCH', 'CPU', de_model)
+        en_model = rai.load_model(encoder_path)
+        de_model = rai.load_model(decoder_path)
+        self.con.modelset('encoder', rai.Backend.torch, rai.Device.cpu, en_model)
+        self.con.modelset('decoder', rai.Backend.torch, rai.Device.cpu, de_model)
 
     def process(self, nparray, length):
-        self.exec(
-            'AI.TENSORSET', 'sentence', 'INT64',
-            *nparray.shape, 'BLOB', nparray.tobytes())
-        self.exec(
-            'AI.TENSORSET', 'length', 'INT64',
-            *length.shape, 'BLOB', length.tobytes())
-        self.exec(
-            'AI.MODELRUN', 'encoder', 'INPUTS', 'sentence', 'length',
-            'OUTPUTS', 'e_output', 'd_hidden')
-        self.exec(
-            'AI.TENSORSET', 'd_input', 'INT64', 1, 1, 'VALUES', utils.SOS_token)
+        tensor = rai.BlobTensor.from_numpy(nparray)
+        self.con.tensorset('sentence', tensor)
+        length_tensor = rai.BlobTensor.from_numpy(length)
+        self.con.tensorset('length', length_tensor)
+        self.con.modelrun('encoder', input=['sentence', 'length'], output=['e_output', 'd_hidden'])
+        sos_tensor = rai.BlobTensor.from_numpy(
+            np.array(utils.SOS_token, dtype=np.int64).reshape(1, 1))
+        self.con.tensorset('d_input', sos_tensor)
         i = 0
         out = []
         while i < self.max_len:
             i += 1
-            self.exec(
-                'AI.MODELRUN', 'decoder', 'INPUTS', 'd_input', 'd_hidden', 'e_output',
-                'OUTPUTS', 'd_output', 'd_hidden')
-            d_output = self.exec('AI.TENSORGET', 'd_output', 'BLOB')[2]
-            d_output_ret = np.frombuffer(d_output, dtype=np.float32)
-            d_output_ret = d_output_ret.reshape(1, utils.voc.num_words)
+            self.con.modelrun(
+                'decoder',
+                input=['d_input', 'd_hidden', 'e_output'],
+                output=['d_output', 'd_hidden'])
+            d_output = self.con.tensorget('d_output', as_type=rai.BlobTensor).to_numpy()
+            d_output_ret = d_output.reshape(1, utils.voc.num_words)
             ind = int(d_output_ret.argmax())
             if ind == utils.EOS_token:
                 break
-            self.exec(
-                'AI.TENSORSET', 'd_input', 'INT64', 1, 1, 'VALUES', ind)
+            inter_tensor = rai.Tensor(rai.DType.int64, shape=[1, 1], value=ind)
+            self.con.tensorset('d_input', inter_tensor)
             if ind == utils.PAD_token:
                 continue
             out.append(ind)

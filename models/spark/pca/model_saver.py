@@ -4,8 +4,8 @@ import pyspark
 from pyspark.sql import SparkSession
 from pyspark.ml.feature import PCA
 from pyspark.ml.linalg import Vectors
-from redisai.model import save_sparkml
-from redisai.model import onnx_utils
+from redisai import save_sparkml
+from redisai import onnx_utils
 from redisai import DType
 
 
