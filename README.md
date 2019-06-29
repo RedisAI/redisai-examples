@@ -34,4 +34,5 @@ git-lfs pull
     - [Python client](./python_client)
     - [Go client](./go_client)
     - [NodeJS client](./js_client)
+    - [Bash client](./bash_client)
 - [Sentinel example](./sentinel) is documented inside the directory itself
