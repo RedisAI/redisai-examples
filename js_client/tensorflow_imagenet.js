@@ -2,10 +2,10 @@ var Jimp = require('jimp')
 var Redis = require('ioredis')
 var fs = require('fs')
 
-const model_path = '../models/imagenet/pytorch/resnet50.pt'
-const script_path = '../models/imagenet/pytorch/data_processing_script.txt'
+const model_path = '../models/tensorflow/imagenet/resnet50.pb'
+const script_path = '../models/tensorflow/imagenet/data_processing_script.txt'
  
-const json_labels = fs.readFileSync('../models/imagenet/data/imagenet_classes.json')
+const json_labels = fs.readFileSync('../data/imagenet_classes.json')
 const labels = JSON.parse(json_labels)
 
 const image_width = 224;
@@ -18,7 +18,8 @@ async function load_model() {
   const model = fs.readFileSync(model_path, {'flag': 'r'})
   const script = fs.readFileSync(script_path, {'flag': 'r'})
   
-  redis.call('AI.MODELSET', 'imagenet_model', 'TORCH', 'CPU', model)
+  redis.call('AI.MODELSET', 'imagenet_model', 'TF', 'CPU', 
+             'INPUTS', 'images', 'OUTPUTS', 'output', model)
   redis.call('AI.SCRIPTSET', 'imagenet_script', 'CPU', script)
 }
 
@@ -53,3 +54,7 @@ async function run(filename) {
 exports.load_model = load_model
 exports.run = run
 
+load_model()
+
+const img_path = '../data/cat.jpg'
+run(img_path)

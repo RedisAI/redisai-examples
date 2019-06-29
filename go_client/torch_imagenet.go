@@ -53,10 +53,10 @@ func main() {
             DB:       0,
         })
 
-    imgPath := "../models/imagenet/data/cat.jpg"
-    modelPath := "../models/imagenet/pytorch/resnet50.pt"
-    scriptPath := "../models/imagenet/pytorch/data_processing_script.txt"
-    jsonPath := "../models/imagenet/data/imagenet_classes.json"
+    imgPath := "../data/cat.jpg"
+    modelPath := "../models/pytorch/imagenet/resnet50.pt"
+    scriptPath := "../models/pytorch/imagenet/data_processing_script.txt"
+    jsonPath := "../data/imagenet_classes.json"
 
 
     imgbuf, rect := getRGBImage(imgPath)

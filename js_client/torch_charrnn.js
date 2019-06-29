@@ -1,8 +1,10 @@
 var Redis = require('ioredis');
+var fs = require('fs')
 
 const all_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ \t\n\r\x0b\x0c'
 
-model_path = '../models/CharRNN/CharRNN_pipeline.pt'
+const model_path = "../models/pytorch/charrnn/charrnn_pipeline.pt"
+const redis = new Redis({ parser: 'javascript' });
 
 function int2str(int_data) {
   let out_str = '';
@@ -17,18 +19,11 @@ const n_layers = 2
 const batch_size = 1
 
 async function load_model() {
- 
-  let redis = new Redis({ parser: 'javascript' });
-
   const model = fs.readFileSync(model_path, {'flag': 'r'})
-  
   redis.call('AI.MODELSET', 'char_rnn', 'TORCH', 'CPU', model)
 }
 
 async function run(prime) {
-
-  let redis = new Redis({ parser: 'javascript' })
-
   let hidden = new Float32Array(n_layers * batch_size * hidden_size)
   hidden.fill(0.0)
 
@@ -49,3 +44,7 @@ async function run(prime) {
 exports.load_model = load_model
 exports.run = run
 
+
+load_model()
+const prime = 1
+run(prime)

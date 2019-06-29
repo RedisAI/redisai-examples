@@ -24,7 +24,7 @@ func main() {
 	n_layers := 2
 	batch_size := 1
 	
-	model_path := "../models/CharRNN/CharRNN_pipeline.pt"
+	model_path := "../models/pytorch/charrnn/charrnn_pipeline.pt"
 	model, err := ioutil.ReadFile(model_path)
 	if err != nil {
 		log.Fatal(err)
