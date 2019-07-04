@@ -13,7 +13,7 @@ git clone git@github.com:RedisAI/redisai-examples.git
 ```
 git-lfs pull
 ```
-- You need python3.6+ for running python examples. Use conda environment file for installing python dependencies. Nodejs folder has package.json file for installing node dependencies.
+- You need Python 3.6+ for running Python examples. Use the conda environment file for installing Python dependencies. The Node.js folder contains a package.json file for installing Node.js dependencies.
 
 
 ### Structure
