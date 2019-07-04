@@ -1,0 +1,24 @@
+REDIS_CLI=redis-cli
+
+echo "SET MODEL"
+$REDIS_CLI -x AI.MODELSET sklearn_model ONNX CPU < ../models/sklearn/linear_regression/linear_regression.onnx
+
+echo "SET TENSORS"
+$REDIS_CLI AI.TENSORSET a FLOAT 1 1 VALUE 4
+
+echo "GET TENSORS"
+$REDIS_CLI AI.TENSORGET a META
+
+echo "RUN MODEL"
+$REDIS_CLI AI.MODELRUN sklearn_model INPUTS a OUTPUTS b
+
+echo "GET TENSOR META"
+$REDIS_CLI AI.TENSORGET b META
+
+echo "GET TENSOR VALUES"
+$REDIS_CLI AI.TENSORGET b VALUES
+
+echo "GET TENSOR BLOB"
+$REDIS_CLI AI.TENSORGET b BLOB
+
+$REDIS_CLI DEL sklearn_model a b
