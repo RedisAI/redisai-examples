@@ -1,5 +1,5 @@
 import redisai as rai
-from redisai import load_model
+from ml2rt import load_model
 model = load_model("../models/spark/linear_regression/linear_regression.onnx")
 
 con = rai.Client()

@@ -1,7 +1,8 @@
-import redisai as rai
-from skimage import io
 import json
 import time
+import redisai as rai
+import ml2rt
+from skimage import io
 
 con = rai.Client(host='localhost', port=6379, db=0)
 
@@ -13,8 +14,8 @@ class_idx = json.load(open("../data/imagenet_classes.json"))
 
 image = io.imread(img_path)
 
-pt_model = rai.load_model(pt_model_path)
-script = rai.load_script(script_path)
+pt_model = ml2rt.load_model(pt_model_path)
+script = ml2rt.load_script(script_path)
 
 out1 = con.modelset('imagenet_model', rai.Backend.torch, rai.Device.cpu, pt_model)
 out2 = con.scriptset('imagenet_script', rai.Device.cpu, script)

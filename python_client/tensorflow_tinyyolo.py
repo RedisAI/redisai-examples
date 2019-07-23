@@ -1,4 +1,5 @@
 import redisai as rai
+import ml2rt
 import numpy as np
 from PIL import Image
 from PIL import ImageDraw
@@ -29,8 +30,8 @@ labels20 = {
 
 
 con = rai.Client()
-model = rai.model.load_model('../models/tensorflow/tinyyolo/tinyyolo.pb')
-script = rai.model.load_script('../models/tensorflow/tinyyolo/yolo_boxes_script.py')
+model = ml2rt.load_model('../models/tensorflow/tinyyolo/tinyyolo.pb')
+script = ml2rt.load_script('../models/tensorflow/tinyyolo/yolo_boxes_script.py')
 
 con.modelset('yolo', rai.Backend.tf, rai.Device.cpu, model, ['input'], ['output'])
 con.scriptset('yolo-post', rai.Device.cpu, script)

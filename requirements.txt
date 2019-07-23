@@ -43,7 +43,8 @@ pytz==2019.1
 PyWavelets==1.0.3
 PyYAML==5.1.1
 redis==3.2.1
--e git+git@github.com:RedisAI/redisai-py.git@e4ae8afcf7f4f01f88b1a4810d0e7dc6df1dcbed#egg=redisai
+redisai
+ml2rt
 requests==2.22.0
 rmtest==0.7.0
 scikit-image==0.15.0

@@ -102,3 +102,6 @@ ENV/
 
 # js
 node_modules
+
+# pycharm
+.idea

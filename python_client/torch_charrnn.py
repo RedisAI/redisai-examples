@@ -1,6 +1,7 @@
+import string
+import ml2rt
 import redisai as rai
 import numpy as np
-import string
 
 all_characters = string.printable
 
@@ -16,7 +17,7 @@ def int2str(int_data):
     return ''.join([all_characters[i] for i in int_data])
 
 
-model = rai.load_model(filepath)
+model = ml2rt.load_model(filepath)
 
 out1 = con.modelset('charRnn', rai.Backend.torch, rai.Device.cpu, model)
 hidden = np.zeros((n_layers, batch_size, hidden_size), dtype=np.float32)
