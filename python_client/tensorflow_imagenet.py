@@ -1,7 +1,7 @@
 import json
 import time
 import redisai as rai
-from redisai import load_model, load_script
+from ml2rt import load_model, load_script
 from skimage import io
 
 con = rai.Client(host='localhost', port=6379, db=0)

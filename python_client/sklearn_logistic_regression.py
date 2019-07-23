@@ -1,6 +1,6 @@
 import numpy as np
 import redisai as rai
-from redisai import load_model
+from ml2rt import load_model
 
 model = load_model("../models/sklearn/logistic_regression/logistic.onnx")
 

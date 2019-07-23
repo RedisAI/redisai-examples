@@ -3,8 +3,8 @@ from os.path import dirname
 import numpy as np
 import redis
 import redisai as rai
-
-import utils
+import ml2rt
+from . import utils
 
 
 class DB:
@@ -17,8 +17,8 @@ class DB:
     def initiate(self):
         encoder_path = f'{dirname(dirname(dirname(__file__)))}/models/pytorch/chatbot/encoder.pt'
         decoder_path = f'{dirname(dirname(dirname(__file__)))}/models/pytorch/chatbot/decoder.pt'
-        en_model = rai.load_model(encoder_path)
-        de_model = rai.load_model(decoder_path)
+        en_model = ml2rt.load_model(encoder_path)
+        de_model = ml2rt.load_model(decoder_path)
         self.con.modelset('encoder', rai.Backend.torch, rai.Device.cpu, en_model)
         self.con.modelset('decoder', rai.Backend.torch, rai.Device.cpu, de_model)
 
