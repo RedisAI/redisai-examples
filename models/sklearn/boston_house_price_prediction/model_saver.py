@@ -4,7 +4,7 @@ from sklearn.linear_model import LinearRegression
 import sklearn
 import numpy as np
 
-from redisai import save_sklearn
+from ml2rt import save_sklearn
 
 boston = load_boston()
 X, y = boston.data, boston.target

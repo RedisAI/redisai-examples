@@ -6,9 +6,8 @@ from pyspark.ml.feature import VectorIndexer
 from pyspark.ml import Pipeline
 from pyspark.ml.regression import DecisionTreeRegressor
 import pyspark
-from redisai import save_sparkml
-from redisai import onnx_utils
-from redisai import DType
+from ml2rt import save_sparkml
+from ml2rt import utils
 
 
 executable = sys.executable
@@ -30,7 +29,7 @@ pipeline = Pipeline(stages=[feature_indexer, dt])
 
 # (trainingData, testData) = data.randomSplit([0.9, 0.1])
 model = pipeline.fit(data)
-featurestype = onnx_utils.get_tensortype(
-    node_name='features', dtype=DType.float32, shape=(1, feature_count))
+featurestype = utils.guess_onnx_tensortype(
+    node_name='features', dtype='float32', shape=(1, feature_count))
 save_sparkml(
     model, 'spark.onnx', initial_types=[featurestype], spark_session=spark)

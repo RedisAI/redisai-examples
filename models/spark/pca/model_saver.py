@@ -4,9 +4,8 @@ import pyspark
 from pyspark.sql import SparkSession
 from pyspark.ml.feature import PCA
 from pyspark.ml.linalg import Vectors
-from redisai import save_sparkml
-from redisai import onnx_utils
-from redisai import DType
+from ml2rt import save_sparkml
+from ml2rt import utils
 
 
 executable = sys.executable
@@ -27,6 +26,6 @@ model = pca.fit(data)
 feature_count = data.first()[0].size
 N = data.count()
 
-featurestype = onnx_utils.get_tensortype(
-    node_name='features', dtype=DType.float32, shape=(N, feature_count))
+featurestype = utils.guess_onnx_tensortype(
+    node_name='features', dtype='float32', shape=(N, feature_count))
 save_sparkml(model, 'spark.onnx', initial_types=[featurestype], spark_session=spark)

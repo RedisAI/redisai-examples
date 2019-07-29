@@ -1,8 +1,9 @@
 import torch
+from ml2rt import save_torch
 
 debug = True
 device = 'cpu' if not torch.cuda.is_available() else 'cuda'
-traced_generator = torch.jit.load('CharRNN_model.pt', device)
+traced_generator = torch.jit.load('charrnn_model.pt', device)
 
 
 class ScriptModuleWrapper(torch.jit.ScriptModule):
@@ -31,4 +32,5 @@ class ScriptModuleWrapper(torch.jit.ScriptModule):
 
 filename = 'charrnn_pipeline.pt'
 print('Saving pipeline to {}'.format(filename))
-ScriptModuleWrapper().save(filename)
+net = ScriptModuleWrapper()
+save_torch(net, filename)  # equivalent to net.save(filename)

@@ -1,7 +1,7 @@
 from sklearn.linear_model import LinearRegression
 import numpy as np
 
-from redisai import save_sklearn
+from ml2rt import save_sklearn
 
 # y = x + 1
 x = np.array([[1.0], [2.0], [6.0], [4.0], [3.0], [5.0]])

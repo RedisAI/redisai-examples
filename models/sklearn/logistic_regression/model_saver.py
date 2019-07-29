@@ -1,9 +1,8 @@
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from redisai import save_sklearn
-from redisai import onnx_utils
-from redisai import DType
+from ml2rt import save_sklearn
+from ml2rt import utils
 
 
 iris = load_iris()
@@ -16,7 +15,7 @@ logistic = LogisticRegression(solver='liblinear', multi_class='auto')
 logistic.fit(X_train, y_train)
 
 
-initial_type = onnx_utils.get_tensortype(
-    node_name='float_input', dtype=DType.float32, shape=(1, 4))
+initial_type = utils.guess_onnx_tensortype(
+    node_name='float_input', dtype='float32', shape=(1, 4))
 
 save_sklearn(logistic, 'logistic.onnx', initial_types=[initial_type])

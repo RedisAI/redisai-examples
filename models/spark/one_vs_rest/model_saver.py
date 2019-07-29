@@ -3,9 +3,8 @@ import sys
 import pyspark
 from pyspark.sql import SparkSession
 from pyspark.ml.classification import LogisticRegression, OneVsRest
-from redisai import save_sparkml
-from redisai import onnx_utils
-from redisai import DType
+from ml2rt import save_sparkml
+from ml2rt import utils
 
 
 executable = sys.executable
@@ -19,6 +18,6 @@ lr = LogisticRegression(maxIter=100, tol=0.0001, regParam=0.01)
 ovr = OneVsRest(classifier=lr)
 model = ovr.fit(data)
 feature_count = data.first()[1].size
-tensor_types = onnx_utils.get_tensortype(
-    node_name='features', dtype=DType.float32, shape=(1, feature_count))
+tensor_types = utils.guess_onnx_tensortype(
+    node_name='features', dtype='float32', shape=(1, feature_count))
 save_sparkml(model, 'spark.onnx', initial_types=[tensor_types])

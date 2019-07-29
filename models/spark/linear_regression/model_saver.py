@@ -4,8 +4,7 @@ from pyspark.sql import SparkSession
 from pyspark.ml.linalg import Vectors
 from pyspark.ml.regression import LinearRegression
 import pyspark
-from redisai import save_sparkml
-from redisai import DType
+from ml2rt import save_sparkml
 
 
 executable = sys.executable
@@ -29,4 +28,4 @@ model = lr.fit(data)
 # the name of the input is 'features'
 C = model.numFeatures
 
-save_sparkml(model, 'linear_regression.onnx', 'features', shape=(1, C), dtype=DType.float)
+save_sparkml(model, 'linear_regression.onnx', shape=(1, C), dtype='float32')
