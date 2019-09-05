@@ -1,6 +1,6 @@
 def pre_process_3ch(image):
-    mean = torch.zeros(3).float()
-    std = torch.zeros(3).float()
+    mean = torch.zeros(3).float().to(image.device)
+    std = torch.zeros(3).float().to(image.device)
     mean[0], mean[1], mean[2] = 0.485, 0.456, 0.406
     std[0], std[1], std[2] = 0.229, 0.224, 0.225
     mean = mean.unsqueeze(1).unsqueeze(1)
@@ -10,8 +10,8 @@ def pre_process_3ch(image):
 
 
 def pre_process_4ch(image):
-    mean = torch.zeros(3).float()
-    std = torch.zeros(3).float()
+    mean = torch.zeros(3).float().to(image.device)
+    std = torch.zeros(3).float().to(image.device)
     mean[0], mean[1], mean[2] = 0.485, 0.456, 0.406
     std[0], std[1], std[2] = 0.229, 0.224, 0.225
     mean = mean.unsqueeze(1).unsqueeze(1)
