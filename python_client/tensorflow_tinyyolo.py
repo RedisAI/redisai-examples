@@ -4,6 +4,7 @@ import numpy as np
 from PIL import Image
 from PIL import ImageDraw
 
+from cli import arguments
 
 IMG_SIZE = 416
 labels20 = {
@@ -29,12 +30,17 @@ labels20 = {
     20: "tvmonitor"}
 
 
-con = rai.Client()
+if arguments.gpu:
+    device = rai.Device.gpu
+else:
+    device = rai.Device.cpu
+
+con = rai.Client(host=arguments.host, port=arguments.port)
 model = ml2rt.load_model('../models/tensorflow/tinyyolo/tinyyolo.pb')
 script = ml2rt.load_script('../models/tensorflow/tinyyolo/yolo_boxes_script.py')
 
-con.modelset('yolo', rai.Backend.tf, rai.Device.cpu, model, ['input'], ['output'])
-con.scriptset('yolo-post', rai.Device.cpu, script)
+con.modelset('yolo', rai.Backend.tf, device, model, ['input'], ['output'])
+con.scriptset('yolo-post', device, script)
 
 img_jpg = Image.open('../data/sample_dog_416.jpg')
 # normalize
