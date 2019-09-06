@@ -2,10 +2,17 @@ import numpy as np
 import redisai as rai
 from ml2rt import load_model
 
+from cli import arguments
+
 model = load_model("../models/spark/decisiontree_with_pipeline/spark.onnx")
 
-con = rai.Client()
-con.modelset("spark_model", rai.Backend.onnx, rai.Device.cpu, model)
+if arguments.gpu:
+    device = rai.Device.gpu
+else:
+    device = rai.Device.cpu
+
+con = rai.Client(host=arguments.host, port=arguments.port)
+con.modelset("spark_model", rai.Backend.onnx, device, model)
 features = np.array([[0., 0., 0., 0., 0.], [0., 0., 0., 17., 206.]], dtype=np.float32)
 tensor = rai.BlobTensor.from_numpy(features)
 con.tensorset("input", tensor)

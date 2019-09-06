@@ -3,8 +3,14 @@ import time
 import redisai as rai
 from ml2rt import load_model, load_script
 from skimage import io
+from cli import arguments
 
-con = rai.Client(host='localhost', port=6379, db=0)
+if arguments.gpu:
+    device = rai.Device.gpu
+else:
+    device = rai.Device.cpu
+
+con = rai.Client(host=arguments.host, port=arguments.port)
 
 tf_model_path = '../models/tensorflow/imagenet/resnet50.pb'
 script_path = '../models/tensorflow/imagenet/data_processing_script.txt'
@@ -19,9 +25,9 @@ script = load_script(script_path)
 
 
 out1 = con.modelset(
-    'imagenet_model', rai.Backend.tf, rai.Device.cpu,
+    'imagenet_model', rai.Backend.tf, device,
     input=['images'], output=['output'], data=tf_model)
-out2 = con.scriptset('imagenet_script', rai.Device.cpu, script)
+out2 = con.scriptset('imagenet_script', device, script)
 a = time.time()
 tensor = rai.BlobTensor.from_numpy(image)
 con.tensorset('image', tensor)

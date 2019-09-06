@@ -2,10 +2,16 @@ import string
 import ml2rt
 import redisai as rai
 import numpy as np
+from cli import arguments
 
+if arguments.gpu:
+    device = rai.Device.gpu
+else:
+    device = rai.Device.cpu
+
+con = rai.Client(host=arguments.host, port=arguments.port)
 all_characters = string.printable
 
-con = rai.Client(host='localhost', port=6379, db=0)
 hidden_size = 300
 n_layers = 2
 batch_size = 1
@@ -19,7 +25,7 @@ def int2str(int_data):
 
 model = ml2rt.load_model(filepath)
 
-out1 = con.modelset('charRnn', rai.Backend.torch, rai.Device.cpu, model)
+out1 = con.modelset('charRnn', rai.Backend.torch, device, model)
 hidden = np.zeros((n_layers, batch_size, hidden_size), dtype=np.float32)
 hidden_tensor = rai.BlobTensor.from_numpy(hidden)
 out2 = con.tensorset('hidden', hidden_tensor)

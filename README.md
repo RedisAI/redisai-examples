@@ -14,7 +14,16 @@ git clone git@github.com:RedisAI/redisai-examples.git
 git-lfs pull
 ```
 - You need Python 3.6+ for running Python examples. Use the conda environment file for installing Python dependencies. The Node.js folder contains a package.json file for installing Node.js dependencies.
+- Python examples accept device information and connection paramters over command line arguments. Ex: `python torch_imagenet.py --gpu --host aws.com` will run the example on RedisAI GPU hosted at aws.com
+- Python examples use the converter package [ml2rt](https://github.com/hhsecond/ml2rt) for loading the models and script 
 
+### ml2rt
+ml2rt is a set of machine learning utilities for model conversion, serialization, loading etc. We use ml2rt for
+- Saving Tensorflow, PyTorch and ONNX models to disk
+- Converting models from other frameworks like spark, sklearn to ONNX
+- Loading models and script from disk
+
+Checkout [the repository](https://github.com/hhsecond/ml2rt) for the complete documentation
 
 ### Structure
 
