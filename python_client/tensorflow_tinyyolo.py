@@ -51,7 +51,7 @@ img /= 256.0
 tensor = rai.BlobTensor.from_numpy(img)
 con.tensorset('in', tensor)
 con.modelrun('yolo', 'in', 'out')
-con.scriptrun('yolo-post', 'boxes_from_tf', input='out', output='boxes')
+con.scriptrun('yolo-post', 'boxes_from_tf', inputs='out', outputs='boxes')
 boxes = con.tensorget('boxes', as_type=rai.BlobTensor).to_numpy()
 
 n_boxes = 0

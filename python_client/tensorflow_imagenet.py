@@ -26,7 +26,7 @@ script = load_script(script_path)
 
 out1 = con.modelset(
     'imagenet_model', rai.Backend.tf, device,
-    input=['images'], output=['output'], data=tf_model)
+    inputs=['images'], outputs=['output'], data=tf_model)
 out2 = con.scriptset('imagenet_script', device, script)
 a = time.time()
 tensor = rai.BlobTensor.from_numpy(image)

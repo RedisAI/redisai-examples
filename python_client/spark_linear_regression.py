@@ -11,7 +11,7 @@ else:
     device = rai.Device.cpu
 
 con = rai.Client(host=arguments.host, port=arguments.port)
-con.modelset("spark_model", rai.Backend.onnx, device, model, input=['features'])
+con.modelset("spark_model", rai.Backend.onnx, device, model, inputs=['features'])
 dummydata = [15.0]
 tensor = rai.Tensor.scalar(rai.DType.float, *dummydata)
 con.tensorset("input", tensor)

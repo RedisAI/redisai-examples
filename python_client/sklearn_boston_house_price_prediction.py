@@ -18,6 +18,6 @@ else:
 con = Client(host=arguments.host, port=arguments.port)
 con.tensorset('tensor', tensor)
 con.modelset('model', Backend.onnx, device, model)
-con.modelrun('model', input=['tensor'], output=['out'])
+con.modelrun('model', inputs=['tensor'], outputs=['out'])
 out = con.tensorget('out', as_type=BlobTensor)
 print(out.to_numpy())

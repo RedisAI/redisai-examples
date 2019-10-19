@@ -32,6 +32,6 @@ out4 = con.scriptrun('imagenet_script', 'pre_process_3ch', 'image', 'temp1')
 out5 = con.modelrun('imagenet_model', 'temp1', 'temp2')
 out6 = con.scriptrun('imagenet_script', 'post_process', 'temp2', 'out')
 final = con.tensorget('out')
-ind = final.value[0]
+ind = final[0]
 print(ind, class_idx[str(ind)])
 print(time.time() - a)
