@@ -1,7 +1,7 @@
 REDIS_CLI=redis-cli
 
 echo "SET MODEL"
-$REDIS_CLI -x AI.MODELSET onnxmodel ONNX CPU < ../models/onnx/mnist/mnist.onnx
+$REDIS_CLI -x AI.MODELSET onnxmodel ONNX CPU BLOB < ../models/onnx/mnist/mnist.onnx
 
 echo "SET TENSORS"
 $REDIS_CLI -x AI.TENSORSET a FLOAT 1 1 28 28 BLOB < ../data/one.raw

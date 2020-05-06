@@ -1,7 +1,7 @@
 REDIS_CLI=redis-cli
 
 echo "SET MODEL"
-$REDIS_CLI -x AI.MODELSET sklearn_logistic ONNX CPU < ../models/sklearn/logistic_regression/logistic.onnx
+$REDIS_CLI -x AI.MODELSET sklearn_logistic ONNX CPU BLOB< ../models/sklearn/logistic_regression/logistic.onnx
 
 echo "SET TENSORS"
 $REDIS_CLI AI.TENSORSET a FLOAT 1 4
