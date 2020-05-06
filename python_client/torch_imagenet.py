@@ -6,9 +6,9 @@ from skimage import io
 from cli import arguments
 
 if arguments.gpu:
-    device = rai.Device.gpu
+    device = 'gpu'
 else:
-    device = rai.Device.cpu
+    device = 'cpu'
 
 con = rai.Client(host=arguments.host, port=arguments.port)
 
@@ -23,11 +23,10 @@ image = io.imread(img_path)
 pt_model = ml2rt.load_model(pt_model_path)
 script = ml2rt.load_script(script_path)
 
-out1 = con.modelset('imagenet_model', rai.Backend.torch, device, pt_model)
+out1 = con.modelset('imagenet_model', 'torch', device, pt_model)
 out2 = con.scriptset('imagenet_script', device, script)
 a = time.time()
-tensor = rai.BlobTensor.from_numpy(image)
-out3 = con.tensorset('image', tensor)
+out3 = con.tensorset('image', image)
 out4 = con.scriptrun('imagenet_script', 'pre_process_3ch', 'image', 'temp1')
 out5 = con.modelrun('imagenet_model', 'temp1', 'temp2')
 out6 = con.scriptrun('imagenet_script', 'post_process', 'temp2', 'out')

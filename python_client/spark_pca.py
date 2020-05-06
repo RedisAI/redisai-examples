@@ -6,17 +6,16 @@ from cli import arguments
 model = load_model("../models/spark/pca/spark.onnx")
 
 if arguments.gpu:
-    device = rai.Device.gpu
+    device = 'gpu'
 else:
-    device = rai.Device.cpu
+    device = 'cpu'
 
 con = rai.Client(host=arguments.host, port=arguments.port)
-con.modelset("spark_model", rai.Backend.onnx, device, model)
+con.modelset("spark_model", 'onnx', device, model)
 dummydata = np.array(
-    [[2.0, 0.0, 3.0, 4.0, 5.0], [4.0, 0.0, 0.0, 6.0, 7.0]],
+    [[5, 1.0, 7.0, 7.0, 7.0], [2.0, 0.0, 3.0, 4.0, 5.0], [4.0, 0.0, 0.0, 6.0, 7.0]],
     dtype=np.float32)
-tensor = rai.BlobTensor.from_numpy(dummydata)
-con.tensorset("input", tensor)
+con.tensorset("input", dummydata)
 con.modelrun("spark_model", ["input"], ["output"])
-outtensor = con.tensorget("output", as_type=rai.BlobTensor)
-print(outtensor.to_numpy())
+outtensor = con.tensorget("output")
+print(outtensor)

@@ -31,15 +31,15 @@ labels20 = {
 
 
 if arguments.gpu:
-    device = rai.Device.gpu
+    device = 'gpu'
 else:
-    device = rai.Device.cpu
+    device = 'cpu'
 
 con = rai.Client(host=arguments.host, port=arguments.port)
 model = ml2rt.load_model('../models/tensorflow/tinyyolo/tinyyolo.pb')
 script = ml2rt.load_script('../models/tensorflow/tinyyolo/yolo_boxes_script.py')
 
-con.modelset('yolo', rai.Backend.tf, device, model, ['input'], ['output'])
+con.modelset('yolo', 'tf', device, model, inputs=['input'], outputs=['output'])
 con.scriptset('yolo-post', device, script)
 
 img_jpg = Image.open('../data/sample_dog_416.jpg')
@@ -48,11 +48,10 @@ img = np.array(img_jpg).astype(np.float32)
 img = np.expand_dims(img, axis=0)
 img /= 256.0
 
-tensor = rai.BlobTensor.from_numpy(img)
-con.tensorset('in', tensor)
+con.tensorset('in', img)
 con.modelrun('yolo', 'in', 'out')
 con.scriptrun('yolo-post', 'boxes_from_tf', inputs='out', outputs='boxes')
-boxes = con.tensorget('boxes', as_type=rai.BlobTensor).to_numpy()
+boxes = con.tensorget('boxes')
 
 n_boxes = 0
 for box in boxes[0]:

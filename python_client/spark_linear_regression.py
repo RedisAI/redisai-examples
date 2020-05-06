@@ -6,15 +6,14 @@ from cli import arguments
 model = load_model("../models/spark/linear_regression/linear_regression.onnx")
 
 if arguments.gpu:
-    device = rai.Device.gpu
+    device = 'gpu'
 else:
-    device = rai.Device.cpu
+    device = 'cpu'
 
 con = rai.Client(host=arguments.host, port=arguments.port)
-con.modelset("spark_model", rai.Backend.onnx, device, model, inputs=['features'])
+con.modelset("spark_model", 'onnx', device, model, inputs=['features'])
 dummydata = [15.0]
-tensor = rai.Tensor.scalar(rai.DType.float, *dummydata)
-con.tensorset("input", tensor)
+con.tensorset("input", dummydata, shape=(1, 1), dtype='float32')
 con.modelrun("spark_model", ["input"], ["output"])
-outtensor = con.tensorget("output", as_type=rai.BlobTensor)
-print(outtensor.to_numpy())
+outtensor = con.tensorget("output")
+print(outtensor)
