@@ -34,7 +34,7 @@ func main() {
 	hidden := new(bytes.Buffer)
 	binary.Write(hidden, binary.BigEndian, make([]float32, arraylen))  // Array is zero valued by default
 	
-	client.Do("AI.MODELSET", "charRnn", "TORCH", "CPU", model)
+	client.Do("AI.MODELSET", "charRnn", "TORCH", "CPU", "BLOB", model)
 	client.Do("AI.TENSORSET", "hidden", "FLOAT", n_layers, batch_size, hidden_size, "BLOB", hidden.Bytes())
 	client.Do("AI.TENSORSET", "prime", "INT64", 1, "VALUES", 6)
 	client.Do("AI.MODELRUN", "charRnn", "INPUTS", "prime", "hidden", "OUTPUTS", "out")

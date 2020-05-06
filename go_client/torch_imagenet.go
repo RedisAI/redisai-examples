@@ -63,8 +63,8 @@ func main() {
     
     model, _ := ioutil.ReadFile(modelPath)
     script, _ := ioutil.ReadFile(scriptPath)
-    client.Do("AI.MODELSET", "imagenet_model", "TORCH", "CPU", model)
-    client.Do("AI.SCRIPTSET", "imagenet_script", "CPU", script)
+    client.Do("AI.MODELSET", "imagenet_model", "TORCH", "CPU", "BLOB", model)
+    client.Do("AI.SCRIPTSET", "imagenet_script", "CPU", "SOURCE", script)
     client.Do("AI.TENSORSET", "image", "UINT8", rect.Max.X, rect.Max.Y, 3, "BLOB", imgbuf.Bytes())
     
     client.Do("AI.SCRIPTRUN", "imagenet_script", "pre_process_3ch", "INPUTS", "image", "OUTPUTS", "temp1")
