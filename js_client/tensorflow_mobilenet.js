@@ -42,7 +42,7 @@ function run(filenames) {
           * https://github.com/luin/ioredis#pipelining
           */
          redis.pipeline()
-              .call('AI.MODELSET', 'mobilenet', 'TF', 'CPU', 'INPUTS', config.inputNode, 'OUTPUTS', config.outputNode, model)
+              .call('AI.MODELSET', 'mobilenet', 'TF', 'CPU', 'INPUTS', config.inputNode, 'OUTPUTS', "BLOB", config.outputNode, model)
               .call('AI.TENSORSET', 'input_' + key, 'FLOAT', 1, config.imageWidth, config.imageHeight, 3, 'BLOB', buffer)
               /**
                * Important note: we're using the same input/output keys here...why? Well, in this example

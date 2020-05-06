@@ -18,8 +18,8 @@ async function load_model() {
   const model = fs.readFileSync(model_path, {'flag': 'r'})
   const script = fs.readFileSync(script_path, {'flag': 'r'})
   
-  redis.call('AI.MODELSET', 'imagenet_model', 'TORCH', 'CPU', model)
-  redis.call('AI.SCRIPTSET', 'imagenet_script', 'CPU', script)
+  redis.call('AI.MODELSET', 'imagenet_model', 'TORCH', 'CPU', "BLOB", model)
+  redis.call('AI.SCRIPTSET', 'imagenet_script', 'CPU', "SOURCE", script)
 }
 
 async function run(filename) {

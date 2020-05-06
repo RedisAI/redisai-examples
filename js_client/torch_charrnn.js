@@ -20,7 +20,7 @@ const batch_size = 1
 
 async function load_model() {
   const model = fs.readFileSync(model_path, {'flag': 'r'})
-  redis.call('AI.MODELSET', 'char_rnn', 'TORCH', 'CPU', model)
+  redis.call('AI.MODELSET', 'char_rnn', 'TORCH', 'CPU', "BLOB", model)
 }
 
 async function run(prime) {
