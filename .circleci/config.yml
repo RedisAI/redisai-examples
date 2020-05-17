@@ -18,6 +18,10 @@ jobs:
           name: install js_client dependencies
           command: cd js_client && npm install
 
+      - run:
+          name: run tensorflow_imagenet
+          command: node tensorflow_imagenet.js
+
 workflows:
   version: 2
   commit:
