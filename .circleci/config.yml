@@ -1,0 +1,40 @@
+version: 2.1
+
+defaults: &defaults
+  working_directory: ~/redisai-examples
+  docker:
+    - image: cimg/base:2020.01
+    - image: redisai/redisai:edge
+
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: js_client -- install nodejs and npm
+          command: 'sudo apt-get install nodejs npm -y'
+      - run:
+          name: install js_client dependencies
+          command: cd js_client && npm install
+
+      - run:
+          name: run tensorflow_imagenet
+          command: node tensorflow_imagenet.js
+
+workflows:
+  version: 2
+  commit:
+    jobs:
+      - build
+
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - build
