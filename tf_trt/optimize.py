@@ -21,9 +21,14 @@ def check_tensor_core_gpu_present():
             
 print("Tensor Core GPU Present:", check_tensor_core_gpu_present()) 
 
+# config = tf.ConfigProto() 
+# config.gpu_options.allow_growth = True 
+# config.allow_soft_placement = True 
+# # graph = tf.Graph().ParseFromString
 
 def load_model(path):
     with tf.gfile.GFile(path, "rb") as f:
+        print(f)
         graph_def = tf.GraphDef()
         graph_def.ParseFromString(f.read())
 
