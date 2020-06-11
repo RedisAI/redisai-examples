@@ -21,23 +21,30 @@ def check_tensor_core_gpu_present():
             
 print("Tensor Core GPU Present:", check_tensor_core_gpu_present()) 
 
-# config = tf.ConfigProto() 
-# config.gpu_options.allow_growth = True 
-# config.allow_soft_placement = True 
-# # graph = tf.Graph().ParseFromString
+DATA_DIR = '../models/tensorflow/imagenet/'
+MODEL = 'resnet50'
+TRT_SUFFIX = '_fp16_trt'
 
-def load_model(path):
-    with tf.gfile.GFile(path, "rb") as f:
-        print(f)
-        graph_def = tf.GraphDef()
-        graph_def.ParseFromString(f.read())
+output_names = ['output']
 
-    with tf.Graph().as_default() as graph:
-        tf.import_graph_def(graph_def, name="")
-    return graph
+print("------------- Load frozen graph from disk -------------")
+with tf.gfile.GFile(DATA_DIR + MODEL + '.pb', "rb") as f:
+    graph_def = tf.GraphDef()
+    graph_def.ParseFromString(f.read())
 
-graph_def = load_model(tf_model_path)
+print("------------- Optimize the model with TensorRT -------------")
+    # max_batch_size=1,
+    # max_workspace_size_bytes=1 << 26,
+    # precision_mode='FP16',
+    # minimum_segment_size=2
+trt_graph = trt.create_inference_graph(
+    input_graph_def=graph_def,
+    outputs=output_names
 
-converter = trt.TrtGraphConverter(input_graph_def=graph_def)
-graph_def = converter.convert()
-converter.save('../models/tensorflow-trt/imagenet/')
+)
+
+print("------------- Write optimized model to the file -------------")
+with open(DATA_DIR + MODEL + TRT_SUFFIX + '.pb', 'wb') as f:
+    f.write(trt_graph.SerializeToString())
+
+print("------------- DONE! -------------")
