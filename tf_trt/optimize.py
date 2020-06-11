@@ -35,6 +35,9 @@ with tf.Session() as sess:
     )
 
     frozen_graph = converter.convert()
+    directory = os.path.dirname(tf_trt_model_path)
+    file = os.path.basename(tf_trt_model_path)
+    tf.io.write_graph(frozen_graph, directory, file, as_text=False)
 
     # print("------------- Write optimized model to the file -------------")
     # with open(tf_trt_model_path, 'wb') as f:
