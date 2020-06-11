@@ -34,15 +34,7 @@ with tf.Session() as sess:
         precision_mode='FP16',
     )
 
-    frozen_graph = converter.convert()
+    frozen_optimized = converter.convert()
     directory = os.path.dirname(tf_trt_model_path)
     file = os.path.basename(tf_trt_model_path)
-    tf.io.write_graph(frozen_graph, directory, file, as_text=False)
-
-    # print("------------- Write optimized model to the file -------------")
-    # with open(tf_trt_model_path, 'wb') as f:
-    #     f.write(trt_graph.SerializeToString())
-
-    # trt_graph.
-
-    # print("------------- DONE! -------------")
+    tf.io.write_graph(frozen_optimized, directory, file, as_text=False)
