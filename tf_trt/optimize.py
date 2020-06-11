@@ -27,6 +27,10 @@ import tensorflow_hub as hub
 
 var_converter = tf.compat.v1.graph_util.convert_variables_to_constants
 url = 'https://tfhub.dev/google/imagenet/resnet_v2_50/classification/1'
+DATA_DIR = '../models/tensorflow/imagenet/'
+MODEL = 'resnet50'
+TRT_SUFFIX = '_fp16_trt'
+
 images = tf.placeholder(tf.float32, shape=(1, 224, 224, 3), name='images')
 module = hub.Module(url)
 print(module.get_signature_names())
@@ -41,35 +45,18 @@ with tf.Session() as sess:
     for node in graph_def.node:
         node.device = ""
     frozen = tf.graph_util.convert_variables_to_constants(sess, graph_def, ['output'])
+    
+    print("------------- Optimize the model with TensorRT -------------")
+
     trt_graph = trt.create_inference_graph(
     input_graph_def=frozen,
-    outputs=['output']
+    outputs=['output'],
+    precision_mode='FP16',
     )
 
-# DATA_DIR = '../models/tensorflow/imagenet/'
-# MODEL = 'resnet50'
-# TRT_SUFFIX = '_fp16_trt'
 
-# output_names = ['output']
+    print("------------- Write optimized model to the file -------------")
+    with open(DATA_DIR + MODEL + TRT_SUFFIX + '.pb', 'wb') as f:
+        f.write(trt_graph.SerializeToString())
 
-# print("------------- Load frozen graph from disk -------------")
-# with tf.gfile.GFile(DATA_DIR + MODEL + '.pb', "rb") as f:
-#     graph_def = tf.GraphDef()
-#     graph_def.ParseFromString(f.read())
-
-# print("------------- Optimize the model with TensorRT -------------")
-#     # max_batch_size=1,
-#     # max_workspace_size_bytes=1 << 26,
-#     # precision_mode='FP16',
-#     # minimum_segment_size=2
-# trt_graph = trt.create_inference_graph(
-#     input_graph_def=graph_def,
-#     outputs=output_names
-
-# )
-
-# print("------------- Write optimized model to the file -------------")
-# with open(DATA_DIR + MODEL + TRT_SUFFIX + '.pb', 'wb') as f:
-#     f.write(trt_graph.SerializeToString())
-
-# print("------------- DONE! -------------")
+    print("------------- DONE! -------------")
