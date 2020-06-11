@@ -1,6 +1,9 @@
-# redisai-examples
+[![license](https://img.shields.io/github/license/RedisAI/redisai-examples.svg)](https://github.com/RedisAI/redisai-examples)
 [![Forum](https://img.shields.io/badge/Forum-RedisAI-blue)](https://forum.redislabs.com/c/modules/redisai)
 [![Gitter](https://badges.gitter.im/RedisLabs/RedisAI.svg)](https://gitter.im/RedisLabs/RedisAI?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
+
+# redisai-examples
 
 **A set of examples those showcases the features of RedisAI**
 
