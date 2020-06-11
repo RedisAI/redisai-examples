@@ -30,7 +30,7 @@ with tf.Session() as sess:
 
     converter = trt.TrtGraphConverter(
         input_graph_def=frozen,
-        outputs=['output'],
+        nodes_blacklist=['output'],
         precision_mode='FP16',
     )
 
