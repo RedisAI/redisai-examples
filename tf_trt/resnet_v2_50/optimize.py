@@ -6,7 +6,7 @@ import os
 from tensorflow.python.compiler.tensorrt import trt_convert as trt
 from tensorflow.python.client import device_lib
 
-tf_trt_model_path = '../models/tensorflow/imagenet/resnet50_fp16_trt.pb'
+tf_trt_model_path = '../../models/tensorflow/imagenet/resnet50_fp16_trt.pb'
 
 var_converter = tf.compat.v1.graph_util.convert_variables_to_constants
 url = 'https://tfhub.dev/google/imagenet/resnet_v2_50/classification/1'
@@ -18,7 +18,7 @@ gpu_available = tf.test.is_gpu_available(
 if gpu_available is False:
     print("No CUDA GPUs found. Exiting...")
     sys.exit(1)
-    
+
 images = tf.placeholder(tf.float32, shape=(1, 224, 224, 3), name='images')
 module = hub.Module(url)
 logits = module(images)

@@ -11,7 +11,7 @@ from tensorflow.python.compiler.tensorrt import trt_convert as trt
 from tensorflow.python.client import device_lib
 var_converter = tf.compat.v1.graph_util.convert_variables_to_constants
 
-tf_trt_model_path = '../models/tensorflow/mobilenet/mobilenet_v1_100_224_fp16_trt.pb'
+tf_trt_model_path = '../../models/tensorflow/mobilenet/mobilenet_v1_100_224_fp16_trt.pb'
 
 url = 'https://tfhub.dev/google/imagenet/mobilenet_v1_100_224/quantops/classification/3'
 
