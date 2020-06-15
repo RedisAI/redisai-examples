@@ -12,10 +12,11 @@ else:
 
 con = rai.Client(host=arguments.host, port=arguments.port)
 
-tf_model_path = '../models/tensorflow/imagenet/resnet50.pb'
-script_path = '../models/tensorflow/imagenet/data_processing_script.txt'
+tf_model_path = '../models/tensorflow/mobilenet/mobilenet_v1_100_224_fp16_trt.pb'
+script_path = '../models/tensorflow/resnet50/data_processing_script.txt'
 img_path = '../data/cat.jpg'
-
+input_var = 'input'
+output_var = 'MobilenetV1/Predictions/Reshape_1'
 class_idx = json.load(open("../data/imagenet_classes.json"))
 
 image = io.imread(img_path)
@@ -25,13 +26,13 @@ script = load_script(script_path)
 
 
 out1 = con.modelset(
-    'imagenet_model', 'tf', device,
-    inputs=['images'], outputs=['output'], data=tf_model)
+    'mobilenet_224', 'tf', device,
+    inputs=[input_var], outputs=[output_var], data=tf_model)
 out2 = con.scriptset('imagenet_script', device, script)
 a = time.time()
 con.tensorset('image', image)
 out4 = con.scriptrun('imagenet_script', 'pre_process_3ch', 'image', 'temp1')
-out5 = con.modelrun('imagenet_model', 'temp1', 'temp2')
+out5 = con.modelrun('mobilenet_224', 'temp1', 'temp2')
 out6 = con.scriptrun('imagenet_script', 'post_process', 'temp2', 'out')
 final = con.tensorget('out')
 ind = final.item()
