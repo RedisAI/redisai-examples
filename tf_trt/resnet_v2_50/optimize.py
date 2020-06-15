@@ -6,7 +6,7 @@ import os
 from tensorflow.python.compiler.tensorrt import trt_convert as trt
 from tensorflow.python.client import device_lib
 
-tf_trt_model_path = '../../models/tensorflow/imagenet/resnet50_fp16_trt.pb'
+tf_trt_model_path = '../../models/tensorflow/resnet50/resnet50_fp16_trt.pb'
 
 var_converter = tf.compat.v1.graph_util.convert_variables_to_constants
 url = 'https://tfhub.dev/google/imagenet/resnet_v2_50/classification/1'

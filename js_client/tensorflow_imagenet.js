@@ -2,8 +2,8 @@ var Jimp = require('jimp')
 var Redis = require('ioredis')
 var fs = require('fs')
 
-const model_path = '../models/tensorflow/imagenet/resnet50.pb'
-const script_path = '../models/tensorflow/imagenet/data_processing_script.txt'
+const model_path = '../models/tensorflow/resnet50/resnet50.pb'
+const script_path = '../models/tensorflow/resnet50/data_processing_script.txt'
  
 const json_labels = fs.readFileSync('../data/imagenet_classes.json')
 const labels = JSON.parse(json_labels)

@@ -54,8 +54,8 @@ func main() {
         })
 
     imgPath := "../data/cat.jpg"
-    modelPath := "../models/tensorflow/imagenet/resnet50.pb"
-    scriptPath := "../models/tensorflow/imagenet/data_processing_script.txt"
+    modelPath := "../models/tensorflow/resnet50/resnet50.pb"
+    scriptPath := "../models/tensorflow/resnet50/data_processing_script.txt"
     jsonPath := "../data/imagenet_classes.json"
 
 
