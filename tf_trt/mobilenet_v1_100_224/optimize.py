@@ -11,6 +11,11 @@ from tensorflow.python.compiler.tensorrt import trt_convert as trt
 
 var_converter = tf.compat.v1.graph_util.convert_variables_to_constants
 
+compiled_version = trt.wrap_py_utils.get_linked_tensorrt_version()
+loaded_version = trt.wrap_py_utils.get_loaded_tensorrt_version()
+print("$$$$$$$$$$$$$$$$$$$$$$$$ Linked TensorRT version: %s" % str(compiled_version))
+print("$$$$$$$$$$$$$$$$$$$$$$$$ Loaded TensorRT version: %s" % str(loaded_version))
+
 trt._check_trt_version_compatibility()
 
 logging.getLogger("tensorflow").setLevel(logging.ERROR)
