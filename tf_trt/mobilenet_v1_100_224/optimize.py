@@ -1,18 +1,17 @@
+import os
+#  restricting execution to a specific device or set of devices for debugging and testing
+os.environ['CUDA_VISIBLE_DEVICES']='0'
 import tensorflow as tf
 import tensorflow_hub as hub
 import ml2rt
 import sys
 import logging
-import os
+# on aws dl ami source activate tensorflow_p36
 from tensorflow.python.compiler.tensorrt import trt_convert as trt
 from tensorflow.python.client import device_lib
-
-os.environ['CUDA_VISIBLE_DEVICES']='0'
-# on aws dl ami source activate tensorflow_p36
-
-print("TensorFlow version: ", tf.__version__)
-logging.getLogger("tensorflow").setLevel(logging.ERROR)
 var_converter = tf.compat.v1.graph_util.convert_variables_to_constants
+
+logging.getLogger("tensorflow").setLevel(logging.ERROR)
 
 tf_trt_model_path = '../../models/tensorflow/mobilenet/mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt.pb'
 
@@ -22,6 +21,7 @@ gpu_available = tf.test.is_gpu_available(
     cuda_only=True, min_cuda_compute_capability=None
 )
 
+print("TensorFlow version: ", tf.__version__)
 if gpu_available is False:
     print("No CUDA GPUs found. Exiting...")
     sys.exit(1)
@@ -37,7 +37,8 @@ print(module.get_output_info_dict())
 logits = module(images)
 logits = tf.identity(logits, output_var)
 
-
+conversion_params = trt.DEFAULT_TRT_CONVERSION_PARAMS._replace(
+    precision_mode=trt.TrtPrecisionMode.FP16)
 
 with tf.Session() as sess:
     sess.run([tf.global_variables_initializer()])
@@ -50,11 +51,11 @@ with tf.Session() as sess:
         sess, graph_def, [output_var])
 
     print("Optimizing the model with TensorRT")
-    conversion_params = trt.DEFAULT_TRT_CONVERSION_PARAMS._replace(
-    precision_mode=trt.TrtPrecisionMode.FP16,  input_graph_def=frozen )
 
     converter = trt.TrtGraphConverter(
-        *conversion_params
+        input_graph_def=frozen,
+        nodes_blacklist=[output_var],
+        precision_mode='FP16',
     )
 
     frozen_optimized = converter.convert()
