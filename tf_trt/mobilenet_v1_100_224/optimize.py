@@ -2,13 +2,16 @@ import tensorflow as tf
 import tensorflow_hub as hub
 import ml2rt
 import sys
-# on aws dl ami source activate tensorflow_p36
-
-import tensorflow as tf
-import tensorflow_hub as hub
+import logging
 import os
 from tensorflow.python.compiler.tensorrt import trt_convert as trt
 from tensorflow.python.client import device_lib
+
+os.environ['CUDA_VISIBLE_DEVICES']='0'
+# on aws dl ami source activate tensorflow_p36
+
+print("TensorFlow version: ", tf.__version__)
+logging.getLogger("tensorflow").setLevel(logging.ERROR)
 var_converter = tf.compat.v1.graph_util.convert_variables_to_constants
 
 tf_trt_model_path = '../../models/tensorflow/mobilenet/mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt.pb'
@@ -33,6 +36,10 @@ print(module.get_signature_names())
 print(module.get_output_info_dict())
 logits = module(images)
 logits = tf.identity(logits, output_var)
+
+conversion_params = trt.DEFAULT_TRT_CONVERSION_PARAMS._replace(
+    precision_mode=trt.TrtPrecisionMode.FP16)
+
 with tf.Session() as sess:
     sess.run([tf.global_variables_initializer()])
     graph_def = sess.graph_def
@@ -48,7 +55,7 @@ with tf.Session() as sess:
     converter = trt.TrtGraphConverter(
         input_graph_def=frozen,
         nodes_blacklist=[output_var],
-        precision_mode='FP16',
+        conversion_params=conversion_params,
     )
 
     frozen_optimized = converter.convert()
