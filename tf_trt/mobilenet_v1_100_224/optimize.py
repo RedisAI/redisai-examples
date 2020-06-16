@@ -1,15 +1,17 @@
 import os
+
 #  restricting execution to a specific device or set of devices for debugging and testing
-os.environ['CUDA_VISIBLE_DEVICES']='0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 import tensorflow as tf
 import tensorflow_hub as hub
-import ml2rt
 import sys
 import logging
 # on aws dl ami source activate tensorflow_p36
 from tensorflow.python.compiler.tensorrt import trt_convert as trt
-from tensorflow.python.client import device_lib
+
 var_converter = tf.compat.v1.graph_util.convert_variables_to_constants
+
+trt._check_trt_version_compatibility()
 
 logging.getLogger("tensorflow").setLevel(logging.ERROR)
 
@@ -62,4 +64,3 @@ with tf.Session() as sess:
     directory = os.path.dirname(tf_trt_model_path)
     file = os.path.basename(tf_trt_model_path)
     tf.io.write_graph(frozen_optimized, directory, file, as_text=False)
-
