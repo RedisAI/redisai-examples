@@ -45,19 +45,13 @@ config = model.get_config()
 newOutputs = model(inputs)
 newModel = tf.keras.Model(inputs,newOutputs)
 
-
-# input_arr = tf.random.uniform((1, 5))
-# outputs = model(input_arr)
-
 tf.saved_model.save(newModel, 'mobilenet_v1_100_224_saved_model')
-# full_model.save('mobilenet_v1_100_224_saved_model')
 
 conversion_params = trt.DEFAULT_TRT_CONVERSION_PARAMS._replace(
     precision_mode=trt.TrtPrecisionMode.FP16)
 
-# # frozen_func = convert_variables_to_constants_v2(full_model)
 
-# print("Optimizing the model with TensorRT")
+print("Optimizing the model with TensorRT")
 
 converter = trt.TrtGraphConverterV2(
     input_saved_model_dir='mobilenet_v1_100_224_saved_model',
@@ -66,3 +60,14 @@ converter = trt.TrtGraphConverterV2(
 frozen_optimized = converter.convert()
 converter.save(output_saved_model_dir='mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
 print('Done Converting to TF-TRT FP16')
+
+full_model = tf.keras.models.load_model('mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
+
+frozen_func = convert_variables_to_constants_v2(full_model)
+
+frozen_func.graph.as_graph_def()
+
+tf.io.write_graph(graph_or_graph_def=frozen_func.graph,
+                  logdir=".",
+                  name="graph_v2.pb",
+                  as_text=False)
