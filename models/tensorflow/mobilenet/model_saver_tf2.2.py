@@ -34,9 +34,9 @@ model = tf.keras.Sequential([
     hub.KerasLayer(
         "https://tfhub.dev/google/imagenet/mobilenet_v1_100_224/classification/4")
 ])
-model.build([None, height, width, number_channels])  # Batch input shape.
+model.build([batch_size, height, width, number_channels])  # Batch input shape.
 
-inputs = tf.keras.Input(shape=(height, width, number_channels), name=input_var)
+inputs = tf.keras.Input(batch_input_shape=(batch_size, height, width, number_channels), name=input_var)
 
 newOutputs = model(inputs)
 model = tf.keras.Model(inputs, newOutputs)
@@ -44,7 +44,7 @@ model = tf.keras.Model(inputs, newOutputs)
 full_model = tf.function(lambda x: model(x))
 
 concrete_func = full_model.get_concrete_function(
-    (tf.TensorSpec(inputs.shape, tf.float32, name='input')))
+    (tf.TensorSpec(inputs.shape, tf.float32, name=inputs.name)))
 
 constantGraph = convert_variables_to_constants_v2(concrete_func)
 
