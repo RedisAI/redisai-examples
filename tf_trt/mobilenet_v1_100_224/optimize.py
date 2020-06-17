@@ -77,7 +77,7 @@ model = tf.saved_model.load('mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
 
 full_model = tf.function(lambda x: model(x))
 concrete_func = full_model.get_concrete_function(
-        (tf.TensorSpec(inputs.shape, tf.float32, name="first")))
+        (tf.TensorSpec(inputs.shape, tf.float32, name=inputs.name)))
 
 constantGraph = convert_variables_to_constants_v2(concrete_func)
 
