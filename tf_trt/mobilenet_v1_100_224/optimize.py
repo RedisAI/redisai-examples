@@ -9,7 +9,7 @@ import logging
 # on aws dl ami source activate tensorflow_p36
 from tensorflow.python.compiler.tensorrt import trt_convert as trt
 
-var_converter = tf.compat.v1.graph_util.convert_variables_to_constants
+from tensorflow.python.framework.convert_to_constants import convert_variables_to_constants_v2
 
 compiled_version = trt.wrap_py_utils.get_linked_tensorrt_version()
 loaded_version = trt.wrap_py_utils.get_loaded_tensorrt_version()
@@ -39,8 +39,6 @@ height, width = hub.get_expected_image_size(module)
 input_var = 'input'
 output_var = 'MobilenetV1/Predictions/Reshape_1'
 images = tf.placeholder(tf.float32, shape=(batch_size, height, width, 3), name=input_var)
-print(module.get_signature_names())
-print(module.get_output_info_dict())
 logits = module(images)
 logits = tf.identity(logits, output_var)
 
@@ -55,8 +53,8 @@ with tf.Session() as sess:
     # clearing device information
     for node in graph_def.node:
         node.device = ""
-    frozen = tf.graph_util.convert_variables_to_constants(
-        sess, graph_def, [output_var])
+    frozen_func = convert_variables_to_constants_v2(graph_def)
+    frozen_func.graph.as_graph_def()
 
     print("Optimizing the model with TensorRT")
 
