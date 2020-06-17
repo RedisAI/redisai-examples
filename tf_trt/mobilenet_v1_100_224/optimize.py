@@ -33,17 +33,27 @@ if gpu_available is False:
     print("No CUDA GPUs found. Exiting...")
     sys.exit(1)
 
+
+batch_size = 1
+number_channels = 3
+width = 224
+height = 224
+input_var = 'input'
+output_var = 'MobilenetV1/Predictions/Reshape_1'
+
 model = tf.keras.Sequential([
     hub.KerasLayer(
         "https://tfhub.dev/google/imagenet/mobilenet_v1_100_224/classification/4")
 ])
-model.build([None, 224, 224, 3])  # Batch input shape.
+model.build([batch_size, 224, 224, number_channels])  # Batch input shape.
 
-inputs = tf.keras.Input(batch_input_shape=(1,224,224,3))
+inputs = tf.keras.Input(batch_input_shape=(batch_size,224,224,number_channels), name=input_var)
 config = model.get_config()
 
 newOutputs = model(inputs)
 newModel = tf.keras.Model(inputs,newOutputs)
+
+
 
 tf.saved_model.save(newModel, 'mobilenet_v1_100_224_saved_model')
 
@@ -62,11 +72,12 @@ frozen_optimized = converter.convert()
 converter.save(output_saved_model_dir='mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
 print('Done Converting to TF-TRT FP16')
 
-
 # Load model and get the concrete function.
 model = tf.saved_model.load('mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
-concrete_func = model.signatures[
-  tf.saved_model.DEFAULT_SERVING_SIGNATURE_DEF_KEY]
+
+full_model = tf.function(lambda x: model(x))
+concrete_func = full_model.get_concrete_function(
+        (tf.TensorSpec(inputs.shape, tf.float32, name="first")))
 
 constantGraph = convert_variables_to_constants_v2(concrete_func)
 
