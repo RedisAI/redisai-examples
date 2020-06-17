@@ -59,15 +59,10 @@ converter = trt.TrtGraphConverterV2(
 
 frozen_optimized = converter.convert()
 
-# Convert Keras model to ConcreteFunction
-full_model = tf.function(lambda x: frozen_optimized(x))
-full_model = full_model.get_concrete_function(
-    x=tf.TensorSpec(frozen_optimized.inputs[0].shape, frozen_optimized.inputs[0].dtype))
-    
-# converter.save(output_saved_model_dir='mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
-# print('Done Converting to TF-TRT FP16')
+converter.save(output_saved_model_dir='mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
+print('Done Converting to TF-TRT FP16')
 
-# full_model = tf.keras.models.load_model('mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
+full_model = tf.keras.models.load_model('mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
 
 frozen_func = convert_variables_to_constants_v2(full_model)
 
