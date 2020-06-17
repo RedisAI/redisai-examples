@@ -41,8 +41,11 @@ model.build([None, 224, 224, 3])  # Batch input shape.
 # model(model.inputs[0].shape, model.inputs[0].dtype)
 # x = 
 
-model.set_inputs(tf.keras.Input(shape=(1,224,224,3)))
-model.save('mobilenet_v1_100_224_saved_model')
+full_model = tf.function(lambda x: model(x))
+full_model = full_model.get_concrete_function(
+                 tf.TensorSpec(model.inputs[0].shape, model.inputs[0].dtype))
+
+full_model.save('mobilenet_v1_100_224_saved_model')
 
 conversion_params = trt.DEFAULT_TRT_CONVERSION_PARAMS._replace(
     precision_mode=trt.TrtPrecisionMode.FP16)
