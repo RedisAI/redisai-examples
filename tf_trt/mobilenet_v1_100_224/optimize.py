@@ -53,8 +53,8 @@ with tf.Session() as sess:
     # clearing device information
     for node in graph_def.node:
         node.device = ""
-    frozen_func = convert_variables_to_constants_v2(graph_def)
-    frozen_func.graph.as_graph_def()
+    frozen = convert_variables_to_constants_v2(graph_def)
+    frozen.graph.as_graph_def()
 
     print("Optimizing the model with TensorRT")
 
