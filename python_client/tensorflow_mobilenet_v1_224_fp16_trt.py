@@ -12,8 +12,8 @@ model_key_name = 'mobilenet_v1_100_224_{device}_{input_shape}'.format(  device=d
 tf_model_path = '../models/tensorflow/mobilenet/mobilenet_v1_100_224_{device}_{input_shape}_fp16_trt.pb'.format(  device=device, input_shape=arguments.input_shape)
 script_path = '../models/tensorflow/resnet50/data_processing_script.txt'
 img_path = '../data/cat.jpg'
-input_var = 'input'
-output_var = 'MobilenetV1/Predictions/Reshape_1'
+input_var = 'input_1' # 'input'
+output_var = 'Func/PartitionedCall/output/_1' # 'MobilenetV1/Predictions/Reshape_1'
 class_idx = json.load(open("../data/imagenet_classes.json"))
 
 image = io.imread(img_path)
