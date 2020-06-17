@@ -62,10 +62,16 @@ frozen_optimized = converter.convert()
 converter.save(output_saved_model_dir='mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
 print('Done Converting to TF-TRT FP16')
 
-full_model = tf.keras.models.load_model('mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
+model = tf.keras.models.load_model('mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
 
+
+ # Convert Keras model to ConcreteFunction
+full_model = tf.function(lambda x: model(x))
+full_model = full_model.get_concrete_function(
+    x=tf.TensorSpec(model.inputs[0].shape, model.inputs[0].dtype))
+
+# Get frozen ConcreteFunction
 frozen_func = convert_variables_to_constants_v2(full_model)
-
 frozen_func.graph.as_graph_def()
 
 tf.io.write_graph(graph_or_graph_def=frozen_func.graph,
