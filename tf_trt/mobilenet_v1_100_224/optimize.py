@@ -1,10 +1,11 @@
-from tensorflow.python.framework.convert_to_constants import convert_variables_to_constants_v2
-from tensorflow.python.compiler.tensorrt import trt_convert as trt
 import logging
-import sys
-import tensorflow_hub as hub
-import tensorflow as tf
 import os
+import sys
+
+import tensorflow as tf
+import tensorflow_hub as hub
+from tensorflow.python.compiler.tensorrt import trt_convert as trt
+from tensorflow.python.framework.convert_to_constants import convert_variables_to_constants_v2
 
 #  restricting execution to a specific device or set of devices for debugging and testing
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
@@ -13,9 +14,9 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 compiled_version = trt.wrap_py_utils.get_linked_tensorrt_version()
 loaded_version = trt.wrap_py_utils.get_loaded_tensorrt_version()
-print("$$$$$$$$$$$$$$$$$$$$$$$$ Linked TensorRT version: %s" %
+print("Linked TensorRT version: %s" %
       str(compiled_version))
-print("$$$$$$$$$$$$$$$$$$$$$$$$ Loaded TensorRT version: %s" %
+print("Loaded TensorRT version: %s" %
       str(loaded_version))
 
 trt._check_trt_version_compatibility()
@@ -33,7 +34,6 @@ if gpu_available is False:
     print("No CUDA GPUs found. Exiting...")
     sys.exit(1)
 
-
 batch_size = 1
 number_channels = 3
 width = 224
@@ -47,19 +47,16 @@ model = tf.keras.Sequential([
 ])
 model.build([batch_size, 224, 224, number_channels])  # Batch input shape.
 
-inputs = tf.keras.Input(batch_input_shape=(batch_size,224,224,number_channels), name=input_var)
+inputs = tf.keras.Input(batch_input_shape=(batch_size, 224, 224, number_channels), name=input_var)
 config = model.get_config()
 
 newOutputs = model(inputs)
-newModel = tf.keras.Model(inputs,newOutputs)
-
-
+newModel = tf.keras.Model(inputs, newOutputs)
 
 tf.saved_model.save(newModel, 'mobilenet_v1_100_224_saved_model')
 
 conversion_params = trt.DEFAULT_TRT_CONVERSION_PARAMS._replace(
     precision_mode=trt.TrtPrecisionMode.FP16)
-
 
 print("Optimizing the model with TensorRT")
 
@@ -78,7 +75,7 @@ model = tf.saved_model.load('mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
 full_model = tf.function(lambda x: model(x))
 
 concrete_func = full_model.get_concrete_function(
-        (tf.TensorSpec(inputs.shape, tf.float32, name=inputs.name)))
+    (tf.TensorSpec(inputs.shape, tf.float32, name=inputs.name)))
 
 constantGraph = convert_variables_to_constants_v2(concrete_func)
 
