@@ -64,9 +64,18 @@ converter = trt.TrtGraphConverterV2(
     conversion_params=conversion_params)
 
 frozen_optimized = converter.convert()
-directory = os.path.dirname(tf_trt_model_path)
-file = os.path.basename(tf_trt_model_path)
-tf.io.write_graph(graph_or_graph_def=frozen_optimized.graph,
+# directory = os.path.dirname(tf_trt_model_path)
+# file = os.path.basename(tf_trt_model_path)
+# tf.io.write_graph(graph_or_graph_def=frozen_optimized.graph,
+#                   logdir=".",
+#                   name=file,
+#                   as_text=False)
+
+
+frozen_func = convert_variables_to_constants_v2(frozen_optimized)
+frozen_func.graph.as_graph_def()
+
+tf.io.write_graph(graph_or_graph_def=frozen_func.graph,
                   logdir=".",
-                  name=file,
+                  name="graph_v2.pb",
                   as_text=False)
