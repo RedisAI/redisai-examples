@@ -65,8 +65,11 @@ print('Done Converting to TF-TRT FP16')
 model = tf.keras.models.load_model('mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
 
 # Get ConcreteFunction
-f = model.get_concrete_function()
+f = model.get_concrete_function(
+                 tf.TensorSpec(model.inputs[0].shape, model.inputs[0].dtype))
+
 constantGraph = convert_variables_to_constants_v2(f)
+
 
 directory = os.path.dirname(tf_trt_model_path)
 file = os.path.basename(tf_trt_model_path)
