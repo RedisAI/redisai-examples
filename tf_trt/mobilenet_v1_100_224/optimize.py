@@ -64,18 +64,5 @@ converter = trt.TrtGraphConverterV2(
     conversion_params=conversion_params)
 
 frozen_optimized = converter.convert()
-# directory = os.path.dirname(tf_trt_model_path)
-# file = os.path.basename(tf_trt_model_path)
-# tf.io.write_graph(graph_or_graph_def=frozen_optimized.graph,
-#                   logdir=".",
-#                   name=file,
-#                   as_text=False)
-
-
-frozen_func = convert_variables_to_constants_v2(frozen_optimized)
-frozen_func.graph.as_graph_def()
-
-tf.io.write_graph(graph_or_graph_def=frozen_func.graph,
-                  logdir=".",
-                  name="graph_v2.pb",
-                  as_text=False)
+converter.save(output_saved_model_dir='mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
+print('Done Converting to TF-TRT FP16')
