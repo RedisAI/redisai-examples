@@ -63,10 +63,10 @@ converter = trt.TrtGraphConverterV2(
     input_saved_model_dir='mobilenet_v1_100_224_saved_model',
     conversion_params=conversion_params)
 
-# frozen_optimized = converter.convert()
-# directory = os.path.dirname(tf_trt_model_path)
-# file = os.path.basename(tf_trt_model_path)
-# tf.io.write_graph(graph_or_graph_def=frozen_optimized.graph,
-#                   logdir=".",
-#                   name=file,
-#                   as_text=False)
+frozen_optimized = converter.convert()
+directory = os.path.dirname(tf_trt_model_path)
+file = os.path.basename(tf_trt_model_path)
+tf.io.write_graph(graph_or_graph_def=frozen_optimized.graph,
+                  logdir=".",
+                  name=file,
+                  as_text=False)
