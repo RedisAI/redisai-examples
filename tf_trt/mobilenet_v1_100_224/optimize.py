@@ -38,30 +38,24 @@ model = tf.keras.Sequential([
         "https://tfhub.dev/google/imagenet/mobilenet_v1_100_224/classification/4")
 ])
 model.build([None, 224, 224, 3])  # Batch input shape.
-# model(model.inputs[0].shape, model.inputs[0].dtype)
-# x = 
-
-full_model = tf.function(lambda x: model(x))
-full_model = full_model.get_concrete_function(
-                 tf.TensorSpec(model.inputs[0].shape, model.inputs[0].dtype))
-
-full_model.save('mobilenet_v1_100_224_saved_model')
+tf.saved_model.save(model, 'mobilenet_v1_100_224_saved_model')
+# full_model.save('mobilenet_v1_100_224_saved_model')
 
 conversion_params = trt.DEFAULT_TRT_CONVERSION_PARAMS._replace(
     precision_mode=trt.TrtPrecisionMode.FP16)
 
-# frozen_func = convert_variables_to_constants_v2(full_model)
+# # frozen_func = convert_variables_to_constants_v2(full_model)
 
-print("Optimizing the model with TensorRT")
+# print("Optimizing the model with TensorRT")
 
 converter = trt.TrtGraphConverterV2(
     input_saved_model_dir='mobilenet_v1_100_224_saved_model',
     conversion_params=conversion_params)
 
-frozen_optimized = converter.convert()
-directory = os.path.dirname(tf_trt_model_path)
-file = os.path.basename(tf_trt_model_path)
-tf.io.write_graph(graph_or_graph_def=frozen_optimized.graph,
-                  logdir=".",
-                  name=file,
-                  as_text=False)
+# frozen_optimized = converter.convert()
+# directory = os.path.dirname(tf_trt_model_path)
+# file = os.path.basename(tf_trt_model_path)
+# tf.io.write_graph(graph_or_graph_def=frozen_optimized.graph,
+#                   logdir=".",
+#                   name=file,
+#                   as_text=False)
