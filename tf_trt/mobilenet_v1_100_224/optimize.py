@@ -47,12 +47,12 @@ output_var = 'MobilenetV1/Predictions/Reshape_1'
 conversion_params = trt.DEFAULT_TRT_CONVERSION_PARAMS._replace(
     precision_mode=trt.TrtPrecisionMode.FP16)
 
-frozen_func = convert_variables_to_constants_v2(full_model)
+# frozen_func = convert_variables_to_constants_v2(full_model)
 
 print("Optimizing the model with TensorRT")
 
 converter = trt.TrtGraphConverterV2(
-    input_graph_def=frozen_func,
+    input_graph_def=full_model,
     conversion_params=conversion_params)
 
 frozen_optimized = converter.convert()
