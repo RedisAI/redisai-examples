@@ -5,7 +5,7 @@ from ml2rt import load_model, load_script
 from skimage import io
 from cli import arguments
 
-device = 'gpu' if arguments.gpu else 'cpu'
+device = 'gpu'
 
 con = rai.Client(host=arguments.host, port=arguments.port)
 model_key_name = 'mobilenet_v1_100_224_{device}_{input_shape}'.format(  device=device, input_shape=arguments.input_shape)
