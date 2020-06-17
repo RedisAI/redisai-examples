@@ -5,19 +5,22 @@ from ml2rt import load_model, load_script
 from skimage import io
 from cli import arguments
 
-if arguments.gpu:
-    device = 'gpu'
-else:
-    device = 'cpu'
+device = 'gpu' if arguments.gpu else 'cpu'
 
 con = rai.Client(host=arguments.host, port=arguments.port)
-
-tf_model_path = '../models/tensorflow/mobilenet/mobilenet_v1_100_224_fp16_trt.pb'
+model_key_name = 'mobilenet_v1_100_224_{device}_{input_shape}'.format(  device=device, input_shape=arguments.input_shape)
+tf_model_path = '../models/tensorflow/mobilenet/mobilenet_v1_100_224_{device}_{input_shape}_fp16_trt.pb'.format(  device=device, input_shape=arguments.input_shape)
 script_path = '../models/tensorflow/resnet50/data_processing_script.txt'
 img_path = '../data/cat.jpg'
 input_var = 'input'
 output_var = 'MobilenetV1/Predictions/Reshape_1'
 class_idx = json.load(open("../data/imagenet_classes.json"))
+
+image = io.imread(img_path)
+
+tf_model = load_model(tf_model_path)
+script = load_script(script_path)
+
 
 image = io.imread(img_path)
 
