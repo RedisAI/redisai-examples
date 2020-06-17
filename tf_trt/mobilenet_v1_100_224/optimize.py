@@ -62,14 +62,13 @@ frozen_optimized = converter.convert()
 converter.save(output_saved_model_dir='mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
 print('Done Converting to TF-TRT FP16')
 
-model = tf.keras.models.load_model('mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
 
-# Get ConcreteFunction
-f = model.get_concrete_function(
-                 tf.TensorSpec(model.inputs[0].shape, model.inputs[0].dtype))
+# Load model and get the concrete function.
+model = tf.saved_model.load('mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
+concrete_func = model.signatures[
+  tf.saved_model.DEFAULT_SERVING_SIGNATURE_DEF_KEY]
 
-constantGraph = convert_variables_to_constants_v2(f)
-
+constantGraph = convert_variables_to_constants_v2(concrete_func)
 
 directory = os.path.dirname(tf_trt_model_path)
 file = os.path.basename(tf_trt_model_path)
