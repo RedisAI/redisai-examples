@@ -15,7 +15,9 @@ sudo apt-get install --no-install-recommends nvidia-driver-418
 # Reboot. Check that GPUs are visible using the command: nvidia-smi
 sudo apt-get update
 
-sudo apt-get install libnvinfer5
+sudo dpkg -i nv-tensorrt-repo-ubuntu1804-cuda10.1-trt6.0.1.5-ga-20190913_1-1_amd64.deb
+sudo apt-key add /var/nv-tensorrt-repo-cuda10.1-trt6.0.1.5-ga-20190913/7fa2af80.pub
+sudo apt-get install -y --no-install-recommends --allow-downgrades libnvinfer6=6.0.1-1+cuda10.1 libnvinfer-dev=6.0.1-1+cuda10.1
 ```
 
 ImageNet V1 224 partial log

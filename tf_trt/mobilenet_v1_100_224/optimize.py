@@ -44,6 +44,7 @@ print(module.get_output_info_dict())
 logits = module(images)
 logits = tf.identity(logits, output_var)
 
+
 conversion_params = trt.DEFAULT_TRT_CONVERSION_PARAMS._replace(
     precision_mode=trt.TrtPrecisionMode.FP16)
 
@@ -59,11 +60,10 @@ with tf.Session() as sess:
 
     print("Optimizing the model with TensorRT")
 
-    converter = trt.TrtGraphConverter(
-        input_graph_def=frozen,
-        nodes_blacklist=[output_var],
-        precision_mode='FP16',
-    )
+    converter = trt.TrtGraphConverterV2(
+    input_graph_def=frozen,
+    conversion_params=conversion_params)
+    converter.convert()
 
     frozen_optimized = converter.convert()
     directory = os.path.dirname(tf_trt_model_path)
