@@ -71,7 +71,7 @@ model = tf.keras.models.load_model('mobilenet_v1_100_224_gpu_NxHxWxC_fp16_trt')
 #     x=tf.TensorSpec(model.inputs[0].shape, model.inputs[0].dtype))
 
 # Get frozen ConcreteFunction
-frozen_func = convert_variables_to_constants_v2(full_model)
+frozen_func = convert_variables_to_constants_v2(model)
 frozen_func.graph.as_graph_def()
 
 tf.io.write_graph(graph_or_graph_def=frozen_func.graph,
