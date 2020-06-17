@@ -48,7 +48,6 @@ conversion_params = trt.DEFAULT_TRT_CONVERSION_PARAMS._replace(
     precision_mode=trt.TrtPrecisionMode.FP16)
 
 frozen_func = convert_variables_to_constants_v2(full_model)
-frozen_func.graph.as_graph_def()
 
 print("Optimizing the model with TensorRT")
 
