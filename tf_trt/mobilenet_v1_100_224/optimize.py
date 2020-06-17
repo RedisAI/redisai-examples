@@ -33,16 +33,13 @@ if gpu_available is False:
     print("No CUDA GPUs found. Exiting...")
     sys.exit(1)
 
-full_model = tf.keras.Sequential([
+model = tf.keras.Sequential([
     hub.KerasLayer(
         "https://tfhub.dev/google/imagenet/mobilenet_v1_100_224/classification/4")
 ])
-full_model.build([None, 224, 224, 3])  # Batch input shape.
+model.build([None, 224, 224, 3])  # Batch input shape.
 
-batch_size = 1
-height, width = 224, 224
-input_var = 'input'
-output_var = 'MobilenetV1/Predictions/Reshape_1'
+model.save('mobilenet_v1_100_224_saved_model')
 
 conversion_params = trt.DEFAULT_TRT_CONVERSION_PARAMS._replace(
     precision_mode=trt.TrtPrecisionMode.FP16)
@@ -52,13 +49,13 @@ conversion_params = trt.DEFAULT_TRT_CONVERSION_PARAMS._replace(
 print("Optimizing the model with TensorRT")
 
 converter = trt.TrtGraphConverterV2(
-    input_graph_def=full_model,
+    input_saved_model_dir='mobilenet_v1_100_224_saved_model',
     conversion_params=conversion_params)
 
 frozen_optimized = converter.convert()
 directory = os.path.dirname(tf_trt_model_path)
 file = os.path.basename(tf_trt_model_path)
-tf.io.write_graph(graph_or_graph_def=frozen_func.graph,
+tf.io.write_graph(graph_or_graph_def=frozen_optimized.graph,
                   logdir=".",
                   name=file,
                   as_text=False)
