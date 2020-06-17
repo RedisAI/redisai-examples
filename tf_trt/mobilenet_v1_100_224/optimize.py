@@ -38,7 +38,18 @@ model = tf.keras.Sequential([
         "https://tfhub.dev/google/imagenet/mobilenet_v1_100_224/classification/4")
 ])
 model.build([None, 224, 224, 3])  # Batch input shape.
-tf.saved_model.save(model, 'mobilenet_v1_100_224_saved_model')
+
+inputs = tf.keras.Input(batch_input_shape=(1,224,224,3))
+config = model.get_config()
+
+newOutputs = model(inputs)
+newModel = tf.keras.Model(inputs,newOutputs)
+
+
+# input_arr = tf.random.uniform((1, 5))
+# outputs = model(input_arr)
+
+tf.saved_model.save(newModel, 'mobilenet_v1_100_224_saved_model')
 # full_model.save('mobilenet_v1_100_224_saved_model')
 
 conversion_params = trt.DEFAULT_TRT_CONVERSION_PARAMS._replace(
