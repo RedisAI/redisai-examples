@@ -45,7 +45,7 @@ def index_with_target(x, target:int):
 
 # binary classification - no need for target (output size is 1)
 # multiple output (output vector - target specifies the output index to explain.
-def shapely_sample(tensors: List[Tensor], keys: List[str], args: List[str]):
+def shapley_sample(tensors: List[Tensor], keys: List[str], args: List[str]):
     model_key = keys[0]
     x = tensors[0]
     n_samples = int(args[0])
