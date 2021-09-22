@@ -51,7 +51,7 @@ def shapely_sample(tensors: List[Tensor], keys: List[str], args: List[str]):
     n_samples = int(args[0])
     number_of_outputs = int(args[1])
     output_tensor_index = int(args[2])
-    if(len(args)==4):
+    if(len(args) == 4):
         target = int(args[3])
     else:
         target = None
