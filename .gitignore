@@ -103,5 +103,9 @@ ENV/
 # js
 node_modules
 
-# pycharm
+# editors
 .idea
+.vscode
+
+# test output
+.test_results
