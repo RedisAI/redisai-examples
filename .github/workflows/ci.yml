@@ -9,14 +9,30 @@ jobs:
   tests:
     name: "Python ${{ matrix.python-version }}"
     runs-on: "ubuntu-latest"
-
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.7", "3.8", "3.9"]
 
+    services:
+      redisai:
+        image: redislabs/redisai:edge-cpu-bionic
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
-      - uses: "actions/checkout@v2"
-      - uses: "actions/setup-python@v2"
+      - name: Checkout Code
+        uses: "actions/checkout@v2"
+      - name: Setup Python
+        uses: "actions/setup-python@v2"
         with:
-          python-version: ${{ matrix.python-version }}     
+          python-version: ${{ matrix.python-version }}
+      - name: Redis Connection Check
+        env:
+          REDIS_HOST: redis
+          REDIS_PORT: 6379
+        run: |
+          redis-cli ping
