@@ -109,3 +109,12 @@ node_modules
 
 # test output
 .test_results
+
+# model formats
+*.pt
+*.onnx
+*.pb
+*.pth
+*.pbtxt
+*.pkl
+*.ckpt

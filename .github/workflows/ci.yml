@@ -17,7 +17,8 @@ jobs:
     services:
       redisai:
         image: redislabs/redisai:edge-cpu-bionic
-        # Set health checks to wait until redis has started
+        ports:
+          - 6379:6379
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s
@@ -30,9 +31,19 @@ jobs:
         uses: "actions/setup-python@v2"
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Redis Connection Check
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: /opt/venv
+          key: /opt/venv-${{ hashFiles('**/requirements.txt') }}
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run Tests
         env:
           REDIS_HOST: redis
           REDIS_PORT: 6379
         run: |
-          redis-cli ping
+          papermill scikit_learn/ScikitLearn2Production.ipynb -
