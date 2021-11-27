@@ -43,7 +43,7 @@ jobs:
           pip install -r requirements.txt
       - name: Run Tests
         env:
-          REDIS_HOST: redis
+          REDIS_HOST: localhost
           REDIS_PORT: 6379
         run: |
           papermill scikit_learn/ScikitLearn2Production.ipynb -
