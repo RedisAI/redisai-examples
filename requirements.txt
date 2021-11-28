@@ -98,3 +98,6 @@ webencodings==0.5.1
 widgetsnbextension==3.5.2
 wrapt==1.13.3
 zipp==3.6.0
+torch==1.10.0
+torchvision==0.11.1
+scikit-image==0.18.3
