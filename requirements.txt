@@ -13,3 +13,4 @@ python-dateutil==2.8.0
 PyWavelets==1.2.0
 redisai==1.2.0
 six==1.12.0
+setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
