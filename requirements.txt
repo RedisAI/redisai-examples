@@ -1,4 +1,4 @@
-certifi==2019.9.11
+certifi==2023.7.22
 cycler==0.10.0
 decorator==4.4.0
 hiredis==1.0.0
